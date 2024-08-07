@@ -159,18 +159,37 @@ body {
 }
 
 .code-block {
+  width: fit-content;
   position: relative;
-  background-color: rgba(255, 0, 0, 0.1);
-  border-radius: 10px;
-  padding-left: 20px;
-  margin: 20px;
+  background-color: rgba(var(--light-red-2-rgb), 0.2);
+  &:hover{
+    background-color: rgba(var(--light-red-2-rgb), 0.3);
+  }
+  border-radius: .25rem;
   font-family: monospace;
-  text-align: left;
-  overflow: auto;
+  padding: .125rem 1.25rem;
+  font-size: .9em;
+  font-weight: inherit;
 }
 
 pre {
-  margin: unset;
+  width: fit-content;
+  border-radius: .25rem;
+  padding-right: 20px;
+  font-family: monospace;
+  --tw-ring-inset: inset;
+  font-size: .9em;
+  font-weight: inherit;
+  background-color: rgba(var(--light-red-2-rgb), 0.2);
+  &:hover{
+    background-color: rgba(var(--light-red-2-rgb), 0.3);
+  }
+  code {
+    background-color: unset;
+    &:hover{
+      background-color:unset;
+    }
+  }
 }
 
 code {
@@ -181,12 +200,10 @@ code {
   font-size: .9em;
   font-weight: inherit;
   background-color: rgba(var(--light-red-2-rgb), 0.2);
-  :hover{
+  &:hover{
     background-color: rgba(var(--light-red-2-rgb), 0.3);
   }
 }
-
-
 
 .copy-button {
   position: absolute;

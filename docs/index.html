@@ -16,7 +16,9 @@
 </head>
 <body>
 <div class="navbar">
-    <img class="_cell logo" src="../img/developer-logo.svg" border="0">
+    <a href="https://developer-v2.hellohq.io">    
+        <img class="_cell logo" src="./img/developer-logo.svg" border="0">
+    </a>
     <ul>
         <li class="dropdown">
             <a id="api_v1" href="javascript:void(0)">API v1</a>
@@ -177,14 +179,13 @@
     <p><strong>Header:</strong></p>
     <span class="hljs-variable">Content-Type</span>=application/x-www-form-urlencoded
     <p><strong>Body:</strong></p>
-    <code>
-        <p><span class="hljs-variable">redirect_uri</span>=https://client.example.com/cb</p>
-        <p><span class="hljs-variable">grant_type</span>=authorization_code</p>
-        <p><span class="hljs-variable">code</span>=MWG5HTnFn9n8HJ => 'Code from authorize call'</p>
-        <p><span class="hljs-variable">client_id</span>=1234-testapp  =>'From hellHQ UI'</p>
-        <p><span class="hljs-variable">client_secret</span>=fkgjqoer9tfiealdkcmakwhdf  =>'From hellHQ UI'</p>
-        <p><span class="hljs-variable">scope</span>=read_all write_all</p>
-    </code>
+    <pre><code>POST https:<span class="hljs-comment">//api.hqlabs.de/Token</span>
+                                <span class="hljs-variable">?grant_type</span>=authorization_code
+                                <span class="hljs-variable">&amp;code</span>=MWG5HTnFn9n8HJ => 'Code from authorize call'
+                                <span class="hljs-variable">&amp;client_id</span>=1234-testapp  =>'From hellHQ UI'</span>
+                                <span class="hljs-variable">&amp;client_secret</span>=fkgjqoer9tfiealdkcmakwhdf  =>'From hellHQ UI'
+                                <span class="hljs-variable">&amp;scope</span>=read_all write_all
+                        </code></pre>
 
     <p><strong>Note:</strong> All query parameters (especially the <code>RedirectUri</code>) should be properly
         URL-encoded.</p>
@@ -198,15 +199,16 @@
         <li><code>RedirectUri</code>: the previously specified redirect uri</li>
     </ul>
     <p><strong>Example:</strong></p>
-    <pre><code class="lang-json">{
-                           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"FGDoJBgK96Z..."</span>,  <span class="hljs-comment">// the Access Token for authorization</span>
-                           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span class="hljs-comment">// the token type, usually bearer</span>
-                           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span class="hljs-comment">// the expiration timespan, in seconds</span>
-                           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"K8vma4VohMb..."</span>, <span class="hljs-comment">// the Refresh Token to request a new Access Token</span>
-                           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span class="hljs-comment">// the Id of the user these tokens are valid for</span>
-                           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span class="hljs-comment">// the username of the user these tokens are valid for</span>
-                        }
-                        </code></pre>
+    <pre><code>
+        {
+           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"FGDoJBgK96Z..."</span>,  <span class="hljs-comment">// the Access Token for authorization</span>
+           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span class="hljs-comment">// the token type, usually bearer</span>
+           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span class="hljs-comment">// the expiration timespan, in seconds</span>
+           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"K8vma4VohMb..."</span>, <span class="hljs-comment">// the Refresh Token to request a new Access Token</span>
+           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span class="hljs-comment">// the Id of the user these tokens are valid for</span>
+           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span class="hljs-comment">// the username of the user these tokens are valid for</span>
+        }
+    </code></pre>
     <p>After receiving the Access Token, you can use it to request resources from the
         API.</p>
     <h4 id="resource-request">Resource Request</h4>
@@ -234,15 +236,16 @@
     <pre><code><span class="hljs-attr">grant_type</span>=refresh_token&amp;refresh_token=K8vma4VohMb...
                         </code></pre>
     <p><strong>Example:</strong></p>
-    <pre><code class="lang-json">{
-                           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"ADFoJBgK96c..."</span>,  <span class="hljs-comment">// the new Access Token for authorization</span>
-                           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span class="hljs-comment">// the token type, usually bearer</span>
-                           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span class="hljs-comment">// the expiration timespan, in seconds</span>
-                           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"Gtv6a4VohaB..."</span>, <span class="hljs-comment">// the new Refresh Token to request a new Access Token</span>
-                           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span class="hljs-comment">// the Id of the user these tokens are valid for</span>
-                           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span class="hljs-comment">// the username of the user these tokens are valid for</span>
-                        }
-                        </code></pre>
+    <pre><code>
+        {
+           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"ADFoJBgK96c..."</span>,  <span class="hljs-comment">// the new Access Token for authorization</span>
+           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span class="hljs-comment">// the token type, usually bearer</span>
+           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span class="hljs-comment">// the expiration timespan, in seconds</span>
+           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"Gtv6a4VohaB..."</span>, <span class="hljs-comment">// the new Refresh Token to request a new Access Token</span>
+           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span class="hljs-comment">// the Id of the user these tokens are valid for</span>
+           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span class="hljs-comment">// the username of the user these tokens are valid for</span>
+        }
+    </code></pre>
     <p>For further questions, please contact us at
         <a href="support@helloHQ.io">support@helloHQ.io</a>.
     </p>
@@ -344,27 +347,25 @@
     <h2 id="http-codes">HTTP Codes</h2>
     <p>Each response to an API request indicates the success with its status code.</p>
     <h3 id="success-status-codes">Success Status Codes</h3>
-    <div class="code-block">
     <pre>
         <code>
-<span class="hljs-selector-tag">GET</span>           <span class="hljs-selector-tag">200</span> (OK)     
-<span class="hljs-selector-tag">POST</span>          <span class="hljs-selector-tag">201</span> (Created)     
-<span class="hljs-selector-tag">PUT</span>           <span class="hljs-selector-tag">200</span> (OK)     
-<span class="hljs-selector-tag">DELETE</span>        <span class="hljs-selector-tag">204</span> (No content)     
-<span class="hljs-selector-tag">do</span><span class="hljs-selector-class">.Action</span>()   <span class="hljs-selector-tag">200</span> (OK)            <span class="hljs-selector-tag">If</span> <span class="hljs-selector-tag">base</span> <span class="hljs-selector-tag">entity</span> <span class="hljs-selector-tag">was</span> <span class="hljs-selector-tag">changed</span>
-<span class="hljs-selector-tag">do</span><span class="hljs-selector-class">.Action</span>()   <span class="hljs-selector-tag">201</span> (Created)       <span class="hljs-selector-tag">If</span> <span class="hljs-selector-tag">new</span> <span class="hljs-selector-tag">entity</span> <span class="hljs-selector-tag">was</span> <span class="hljs-selector-tag">created</span>
+            GET           200 (OK)     
+            POST          201 (Created)     
+            PUT           200 (OK)     
+            DELETE        204 (No content)     
+            do.Action()   200 (OK)            If base entity was changed
+            do>.Action()  201 (Created)      If new entity was created
         </code>
     </pre>
-    </div>
     <p>The body of the reponse with status code 200 and 201 contain the changed/created
         object. Responses with code 204 always return an empty body.</p>
     <h3 id="failure-status-codes">Failure Status Codes</h3>
-    <div class="code-block"><pre><code>
-GET / PUT / <span class="hljs-keyword">DELETE</span> / do.Action()   <span class="hljs-number">404</span> (<span class="hljs-keyword">Not</span> <span class="hljs-keyword">Found</span>)     <span class="hljs-keyword">No</span> <span class="hljs-keyword">object</span> <span class="hljs-keyword">found</span> / Invalid <span class="hljs-keyword">Id</span>
-POST / PUT / do.Action()           <span class="hljs-number">400</span> (Bad request)   <span class="hljs-keyword">Missing</span> request <span class="hljs-keyword">body</span>
-POST / PUT / do.Action()           <span class="hljs-number">400</span> (Bad request)   <span class="hljs-keyword">Missing</span> request argument
-POST / PUT / do.Action()           <span class="hljs-number">400</span> (Bad request)   <span class="hljs-keyword">Validation</span> <span class="hljs-keyword">failed</span>
-    </code></pre></div>
+    <pre><code>
+        GET / PUT / DELETE / do.Action()   404 (Not Found)     No object found / Invalid Id
+        POST / PUT / do.Action()           400 (Bad request)   Missing request body
+        POST / PUT / do.Action()           400 (Bad request)   Missing request argument
+        POST / PUT / do.Action()           400 (Bad request)   Validation failed
+    </code></pre>
     <h2 id="dates-and-times">Dates and Times</h2>
     <p>The date and time information is generally in UTC. The client is responsible for
         converting the date and time information to user time. The user object contains
@@ -396,14 +397,19 @@ POST / PUT / do.Action()           <span class="hljs-number">400</span> (Bad req
     <p>Authentication is required to use the functions of the helloHQ API.
         This means that you must identify yourself to the API with a valid access token. 
         This token is used to verify your identity and to ensure that you have the necessary authorizations to access the requested resources.</p>
-    <p>Currently, we provide the possibility to generate an Access Token in helloHQ to access the API. In the future we also plan to an OAuth Flow for the authentication.</p>
+    <p>Currently, we provide the possibility to generate an <code>Access Token</code> in helloHQ to access the API. In the future we also plan to an OAuth Flow for the authentication.</p>
     
     <h3>Access Token</h3>
     <p>To get an access token please go into your helloHQ system. <br>
         Under <b>Admin => Settings => API-Clients</b> you can create and mange your access tokens.</p>
     <br>
-    The token contains much information about the client and the user. All option you can specify when a new token is created.
-    <br> todo add screenshot
+    <p>With a click on the green plus button you can create a new token:</p>
+    <img src="./img/create_client.png"/>
+    
+    <p>In the overview you can see all token's of your system. With the 3 dot menu on the right site you can easily copy or delete a token.</p>
+    <img src="img/api_clients.png"/>
+    
+    <p>The token contains much information about the client and the user. All option you can specify when a new token is created.</p>
 </div>
 <div id="v2_permissions" class="content">
     <h2>Permissions</h2>
@@ -434,24 +440,15 @@ POST / PUT / do.Action()           <span class="hljs-number">400</span> (Bad req
     <p>The helloHQ API supports a huge set of filters that can be executed on all our API controllers.</p>
     <p></p>
     <p>There is one important step. Please encode the URL's you use:</p>
-    <code>
-        filter=name eq 'hello %26 hq' <- correct
-        filter=name eq 'helllo & hq' <- incorrect
-    </code>
-    <div class="code-block">
-        <button class="copy-button" onclick="copyToClipboard(this.parentElement)">
-            <span class="material-symbols-outlined">content_copy</span>
-        </button>
-        <pre>
-<!--            <code>                 -->
-filter=name eq 'hello %26 hq' <- correct
-filter=name eq 'helllo & hq' <- incorrect
-<!--            </code>-->
-        </pre>
-    </div>
+   <pre>
+        <code>
+            filter=name eq 'hello %26 hq' <- correct
+            filter=name eq 'helllo & hq' <- incorrect
+        </code>
+   </pre>
     
     <h2>Operator</h2>
-    
+    <p>We support a bunch of operation to filter your data exactly to your needs.</p>
     <table>
         <tr>
             <th>Operator</th>
@@ -461,75 +458,50 @@ filter=name eq 'helllo & hq' <- incorrect
         <tr>
             <td>eq</td>
             <td>Equal</td>
-            <td class="code-block">
-                <button class="copy-button" onclick="copyToClipboard(this.parentElement)">
-                    <span class="material-symbols-outlined">content_copy</span>
-                </button>
-                <pre>
-                    <code>                 
-filter=name eq 'hellohq'
-                    </code>
-                </pre>
+            <td>
+                <code>filter=name eq 'hellohq'</code>
             </td>
         </tr>
         <tr>
             <td>ne</td>
             <td>Not equal</td>
-            <td>name ne 'hellohq'</td>
+            <td><code>name ne 'hellohq'</code></td>
         </tr>
         <tr>
             <td>gt</td>
             <td>Greater than</td>
-            <td>age gt 18</td>
+            <td><code>price gt 18</code></td>
         </tr>
         <tr>
             <td>ge</td>
             <td>Greater than or equal</td>
-            <td>age ge 18</td>
+            <td><code>price ge 18</code></td>
         </tr>
         <tr>
             <td>lt</td>
             <td>Less than</td>
-            <td>age lt 18</td>
+            <td><code>price lt 18</code></td>
         </tr>
         <tr>
             <td>le</td>
             <td>Less than or equal</td>
-            <td>age le 18</td>
+            <td><code>price le 18</code></td>
         </tr>
         <tr>
             <td>and</td>
             <td>Logical and</td>
-            <td>age ge 18 and age le 30</td>
+            <td><code>price ge 18 and price le 30</code></td>
         </tr>
         <tr>
             <td>or</td>
             <td>Logical or</td>
-            <td>age lt 18 or age gt 30</td>
+            <td><code>price lt 18 or price gt 30</code></td>
         </tr>
         <tr>
             <td>not</td>
             <td>Logical negation</td>
-            <td>not age eq 18</td>
+            <td><code>not price eq 18</code></td>
         </tr>
-        <tr>
-            <td>add</td>
-            <td>Addition</td>
-            <td>price add 5</td>
-        </tr>
-        <tr>
-            <td>sub</td>
-            <td>Subtraction</td>
-            <td>price sub 5</td>
-        </tr>
-        <tr>
-            <td>mul</td>
-            <td>Multiplication</td>
-            <td>price mul 5</td>
-        </tr>
-        <tr>
-            <td>div</td>
-            <td>Division</td>
     </table>
 
     <h2>Data types</h2>
@@ -541,50 +513,51 @@ filter=name eq 'hellohq'
         </tr>
         <tr>
             <td>String</td>
-            <td>name eq 'hellohq'</td>
+            <td><code>name eq 'hellohq'</code></td>
         </tr>
         <tr>
             <td>Boolean</td>
-            <td>is_active eq true</td>
+            <td><code>isActive eq true</code></td>
         </tr>
         <tr>
             <td>Integer</td>
-            <td>age eq 18</td>
+            <td><code>price eq 18</code></td>
         </tr>
         <tr>
             <td>Decimal</td>
-            <td>price eq 18.5</td>
+            <td><code>price eq 18.5</code></td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Date</td>-->
-<!--            <td>created_on eq 2021-01-01</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>Time</td>-->
-<!--            <td>created_on eq 2021-01-01T12:00:00</td>-->
-<!--        </tr>-->
         <tr>
             <td>DateTime</td>
-            <td>created_on eq datetime'2021-01-01T12:00:00Z'</td>
+            <td><code>createdOn eq datetime'2021-01-01T12:00:00Z'</code></td>
         </tr>
     </table>
 </div>
 <div id="v2_order" class="content">
     <h2>Ordering</h2>
     <p>
+        In some cases, you want to order the result set of your query. This can be done by using the <code>orderby</code> parameter.<br/>
+        For example, you can order the result set by the UpdatedOn property to get the latest updated items first.<br/>
+        <code>orderby=updatedOn desc</code>
+    </p>
+    
+    <p>Here some more examples:</p>
+    <p>
         The following statement orders by the LastName property of the users in ascending order. If no ascending asc or descending desc order is defined, asc is chosen as a default.
         <br/>
-        /users?orderby=LastName asc
-        <br/>
+        <code>/users?orderby=LastName asc</code>
+        <p>
         You can also add multiple order statements by listing the properties separated with a , . Keep in mind that we do not allow spaces before or after the , .
         <br/>
         The following url filters by LastName ascending first and then by FirstName descending.
         <br/>
-        /users?orderby=LastName,FirstName desc
-        <br/>
+        <code>/users?orderby=LastName,FirstName desc</code>
+</p>
+    <p>
         If you want to order by a nested property, you can do this by separating the Properties by / .
         <br/>
-        /projects?orderby=ProjectStatus/Type desc</p>
+        <code>/projects?orderby=ProjectStatus/Type desc</code>
+    </p>
 </div>
 <div id="v2_pagination" class="content">
     <h1>Pagination</h1>
@@ -627,20 +600,28 @@ filter=name eq 'hellohq'
 <div style="margin:25px 45px 20px 40px;">
     <div id="default-content">
         
-        <code>
-            Test /v2/Company
-        </code>
-        
         <p><strong>Hi, nice to see you!</strong></p>
 
         <p>This is the developer guide for the helloHQ API, which allows developers access to a
             wide range of entities and business logic of the helloHQ.</p>
-        <h1 id="introduction">Introduction</h1>
-        <p>The helloHQ API allows access to your data. To do so, it follows the <a
-                href="http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html">OData 4.0</a>
-            standard for retrieving, creating, updating and deleting entities through RESTful
-            HTTP requests.</p>
         <p><strong>Base URL:</strong> <code>https://api.hellohq.io</code></p>
+        <h1 id="introduction">Introduction</h1>
+        <p>
+            The helloHQ API is currently available in two versions. There are significant differences between the two versions as they use different standards and technologies. For detailed information, please see the individual sections.
+        </p>
+
+        <h3>Version 1</h3>
+        <p>
+            The first version of the API is based on the OData 4.0 standard. This version is used for most parts of the helloHQ API. This API includes all entities available in helloHQ 1.9.
+            <br/>
+            Once we remove all helloHQ 1.9 modules from our system, this API will be deprecated.
+        </p>
+
+        <h3>Version 2</h3>
+        <p>
+            The second version of the API is based on the REST standard without OData. This version is used for the new helloHQ 2.0 API. This API is in development and new endpoints are added continuously.
+        </p>
+        
         <p><strong>Before you get started, you need to register your client application in the helloHQ
             admin panel.</strong></p>
 
@@ -648,6 +629,9 @@ filter=name eq 'hellohq'
         <p>Please refer to the following pages and guides to learn how to use our API.</p>
         <ul>
             <li><strong>OData</strong>: <a href="http://www.odata.org/">http://www.odata.org/</a></li>
+            <li><strong>OData v4.0</strong>: <a
+                    href=http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html">http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html</a>
+            </li>
             <li><strong>OAuth 2.0</strong>: <a href="http://oauth.net/2/">http://oauth.net/2/</a></li>
             <li><strong>helloHQ Help</strong>: <a href="http://help.hellohq.io">http://help.hellohq.io</a></li>
         </ul>
@@ -655,8 +639,8 @@ filter=name eq 'hellohq'
     
 
     <div class="_footer">
-        <a href="https://www.hellohq.io/en/imprint" target="_blank">Imprint</a> & <a
-            href="https://www.hellohq.io/en/privacy-policy" target="_blank">Privacy Policy</a>
+        <a href="https://www.hellohq.io/en/imprint" target="_blank">Imprint</a> & 
+        <a href="https://www.hellohq.io/en/privacy-policy" target="_blank">Privacy Policy</a>
     </div>  
     
 </div>
