@@ -19,6 +19,7 @@ body, html {
   --light-red-1: #FF92AA;
   --light-red-1-rgb: 255, 146, 170; /* RGB equivalent of #FF92AA */
 
+  --gray-1: #f2f6fd;
   --gray-2: #e1edfc;
   --gray-2-rgb: 225, 237, 252; /* RGB equivalent of #e1edfc */
   --gray-3: #a7bcd7;
@@ -33,6 +34,8 @@ body, html {
   --light-purple-1-rgb: 240, 215, 254; /* RGB equivalent of #F0D7FE */
   --light-purple-2: #E6BAFE;
   --light-purple-2-rgb: 230, 186, 254; /* RGB equivalent of #E6BAFE */
+
+  --nav-bar-height: 85px;
 }
 
 
@@ -65,7 +68,6 @@ h4 {
 ._table {
   padding: 40px 15px;
   padding-top: 80px;
-  display: table;
 }
 
 ._cell {
@@ -86,10 +88,15 @@ body {
   color: var(--color-text-normal);
   margin: 0;
   padding: 0;
+  background-color: var(--gray-1);
 }
 
+#content-wrapper {
+  overflow: auto;
+  height: calc(100vh - 85px);
+  padding: 0 200px;
+}
 .navbar {
-  margin: 60px 40px 40px 40px;
   /*top: 40px;*/
   display: flex;
   flex-direction: row;
@@ -98,12 +105,18 @@ body {
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(var(--gray-4-rgb), 0.2);
   z-index: 1000;
-  padding: 10px;
-  justify-content: center;
+  position:sticky;
+  top:0;
+  left:0;
 }
 .navbar img {
   height: 40px;
-  margin-right: 20px;
+  margin: 0 20px;
+  transition: transform .2s ease-in-out;
+  
+}
+.navbar img:hover {
+  transform: scale(1.03);
 }
 .navbar ul {
   list-style-type: none;
@@ -113,15 +126,21 @@ body {
 }
 .navbar li {
   position: relative;
-  margin: 0 15px;
+  align-content: center;
+  height: var(--nav-bar-height);
 }
 .navbar a {
   text-decoration: none;
-  padding: 10px 15px;
   display: block;
   color: var(--color-text-normal);
+  height: var(--nav-bar-height);
+  align-content: center;
+  text-align: center;
 }
-.navbar a:hover {
+.navbar li > a{
+  width: 7rem;
+}
+.navbar li:hover {
   background-color: var(--gray-2);
   border-radius: 5px;
 }
@@ -143,9 +162,9 @@ body {
 }
 .dropdown-content a {
   color: black;
-  padding: 12px 16px;
   text-decoration: none;
   display: block;
+  height: 50px;
 }
 .dropdown-content a:hover {
   background-color: var(--gray-2);
@@ -154,7 +173,7 @@ body {
   display: block;
 }
 .content {
-  display: none;
+  display: block;
   padding: 25px 45px 20px 40px;
 }
 
@@ -180,11 +199,12 @@ pre {
   --tw-ring-inset: inset;
   font-size: .9em;
   font-weight: inherit;
-  background-color: rgba(var(--light-red-2-rgb), 0.2);
+  background-color: var(--gray-4);
   &:hover{
-    background-color: rgba(var(--light-red-2-rgb), 0.3);
+    background-color: var(--gray-3);
   }
   code {
+    color: white;
     background-color: unset;
     &:hover{
       background-color:unset;
@@ -195,13 +215,14 @@ pre {
 code {
   border-radius: .25rem;
   font-family: monospace;
-  padding: .125rem .25rem;
   --tw-ring-inset: inset;
   font-size: .9em;
   font-weight: inherit;
-  background-color: rgba(var(--light-red-2-rgb), 0.2);
+  background-color: var(--gray-4);
+  color: white;
+  padding: 7px;
   &:hover{
-    background-color: rgba(var(--light-red-2-rgb), 0.3);
+    background-color: var(--gray-3);
   }
 }
 
@@ -299,6 +320,12 @@ code {
   border: 1px solid #ccc;
   border-top: none;
   animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+
+table{
+  display: table;
+  border-spacing: 22px 5px;
+  text-align: center;
 }
 
 /* Go from zero to full opacity */
