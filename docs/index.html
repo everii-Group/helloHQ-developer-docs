@@ -12,7 +12,23 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"/>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        Prism.languages.http =
+        {
+            'method': {
+                pattern: /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD)\b/gm,
+            },
+            'keyword': {
+                pattern: /[?&](client_id|state|redirect_uri|scope|response_type|code|client_secret|grant_type|refresh_token)/gm,
+            }
+            
+        };
+        Prism.languages.webmanifest = Prism.languages.http;
 
+    </script>
     <title>helloHQ API documentation</title>
 </head>
 <body>
@@ -54,11 +70,11 @@
     <div style="padding:25px 45px 20px 40px;">
         <div id="default-content">
 
-            <p><strong>Hi, nice to see you!</strong></p>
+            <h1><strong>Hi, nice to see you!</strong></h1>
 
             <p>This is the developer guide for the helloHQ API, which allows developers access to a
                 wide range of entities and business logic of the helloHQ.</p>
-            <p><strong>Base URL:</strong> <code>https://api.hellohq.io</code></p>
+            <p><strong>Base URL:</strong> https://api.hellohq.io</p>
             <h1 id="introduction">Introduction</h1>
             <p>
                 The helloHQ API is currently available in two versions. There are significant differences between the
@@ -106,7 +122,8 @@
     <!--content v1-->
 
     <div id="v1_auth" class="content">
-        <h1 id="authentication">Authentication</h1>
+        <h1 id="v1">API V1</h1>
+        <h2 id="authentication">Authentication</h2>
         <p>The HQ API uses <a href="https://oauth.net/2/">OAuth 2.0</a> for authentication.</p>
         <h2 id="getting-started">Getting Started</h2>
         <p>OAuth 2.0 is an authentication framework used for secure user authentication.
@@ -182,13 +199,10 @@
             <li><code>Scope</code>: a space-separated list of API scopes</li>
         </ul>
         <p><strong>Example:</strong></p>
-        <pre><code>GET https:<span class="hljs-comment">//api.hqlabs.de/Account/Authorize</span>
-                                ?response_type=code
-                                <span class="hljs-variable">&amp;client_id</span>=<span class="hljs-number">1234</span>-testapp
-                                <span class="hljs-variable">&amp;state</span>=xyz
-                                <span class="hljs-variable">&amp;redirect_uri</span>=https:<span class="hljs-comment">//client.example.com/cb</span>
-                                <span class="hljs-variable">&amp;scope</span>=read_all write_all
-                        </code></pre>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">GET https://api.hqlabs.de/Account/Authorize?response_type=code&client_id=1234-testapp&state=xyz&redirect_uri=https://client.example.com/cb&scope=read_all write_all</code></pre>
+        </div>
         <p><strong>Note:</strong> the generated URL needs to be opened in a browser window so that the
             user can log in and authorize the application.</p>
         <p>All query parameters (especially the <code>RedirectUri</code>) should be properly URL-encoded.</p>
@@ -211,8 +225,10 @@
         </ul>
         <p><strong>Example:</strong></p>
         <p><code>302 Found</code></p>
-        <pre><code>https://client.example.com/cb?code=MWG5HTnFn9n8HJ&amp;<span class="hljs-keyword">state</span>=xyz
-                        </code></pre>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">https://client.example.com/cb?code=MWG5HTnFn9n8HJ&amp;state=xyz</code></pre>
+        </div>
         <h4 id="access-token-request">Access Token Request</h4>
         <p>The client makes a request to the token endpoint by sending the following
             parameters in the request body using the <code>application/x-www-form-urlencoded</code> format.</p>
@@ -237,13 +253,14 @@
         <p><strong>Header:</strong></p>
         <span class="hljs-variable">Content-Type</span>=application/x-www-form-urlencoded
         <p><strong>Body:</strong></p>
-        <pre><code>POST https:<span class="hljs-comment">//api.hqlabs.de/Token</span>
-                                <span class="hljs-variable">?grant_type</span>=authorization_code
-                                <span class="hljs-variable">&amp;code</span>=MWG5HTnFn9n8HJ => 'Code from authorize call'
-                                <span class="hljs-variable">&amp;client_id</span>=1234-testapp  =>'From hellHQ UI'</span>
-            <span class="hljs-variable">&amp;client_secret</span>=fkgjqoer9tfiealdkcmakwhdf  =>'From hellHQ UI'
-                                <span class="hljs-variable">&amp;scope</span>=read_all write_all
-                        </code></pre>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">POST https://api.hqlabs.de/Token?grant_type=authorization_code
+                            &amp;code=MWG5HTnFn9n8HJ => 'Code from authorize call'
+                            &amp;client_id=1234-testapp  =>'From hellHQ UI'
+                            &amp;client_secret=fkgjqoer9tfiealdkcmakwhdf  =>'From hellHQ UI'
+                            &amp;scope=read_all write_all</code></pre>
+        </div>
 
         <p><strong>Note:</strong> All query parameters (especially the <code>RedirectUri</code>) should be properly
             URL-encoded.</p>
@@ -257,30 +274,24 @@
             <li><code>RedirectUri</code>: the previously specified redirect uri</li>
         </ul>
         <p><strong>Example:</strong></p>
-        <pre><code>
-        {
-           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"FGDoJBgK96Z..."</span>,  <span
-                class="hljs-comment">// the Access Token for authorization</span>
-           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span
-                class="hljs-comment">// the token type, usually bearer</span>
-           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span
-                class="hljs-comment">// the expiration timespan, in seconds</span>
-           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"K8vma4VohMb..."</span>, <span
-                class="hljs-comment">// the Refresh Token to request a new Access Token</span>
-           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span
-                class="hljs-comment">// the Id of the user these tokens are valid for</span>
-           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span
-                class="hljs-comment">// the username of the user these tokens are valid for</span>
-        }
-    </code></pre>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code class="language-json">{
+               "access_token": "FGDoJBgK96Z...", // the Access Token for authorization
+               "token_type": "bearer",// the token type, usually bearer
+               "expires_in": 1199,    // the expiration timespan, in seconds
+               "refresh_token": "K8vma4VohMb...", // the Refresh Token to request a new Access Token
+               "user_id": 12,         // the Id of the user these tokens are valid for
+               "user_name": "test.user" // the username of the user these tokens are valid for
+            }</code></pre>
+        </div>
         <p>After receiving the Access Token, you can use it to request resources from the
             API.</p>
         <h4 id="resource-request">Resource Request</h4>
         <p>To retrieve resources from the API, add the Access Token to the Authorization
             header in the following form: Bearer {AccessToken}</p>
         <p><strong>Example:</strong></p>
-        <pre><code><span class="hljs-symbol">Authorization</span>: <span class="hljs-keyword">Bearer </span>FGDoJBgK96Z...
-                        </code></pre>
+        <pre><code><span class="hljs-symbol">Authorization</span>: <span class="hljs-keyword">Bearer </span>FGDoJBgK96Z...</code></pre>
         <p>Access Tokens expire and need to be refreshed with the Refresh Token.</p>
         <h4 id="refresh-token-request">Refresh Token Request</h4>
         <p>Every Access Token expires after a time, usually after 30 days. You can use the
@@ -297,26 +308,22 @@
             </li>
         </ul>
         <p><strong>Example:</strong></p>
-        <p><code>POST https://api.hqlabs.de/Token</code></p>
-        <pre><code><span class="hljs-attr">grant_type</span>=refresh_token&amp;refresh_token=K8vma4VohMb...
-                        </code></pre>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">POST https://api.hqlabs.de/Token?grant_type=refresh_token&amp;refresh_token=K8vma4VohMb...</code></pre>
+        </div>
         <p><strong>Example:</strong></p>
-        <pre><code>
-        {
-           <span class="hljs-string">"access_token"</span>: <span class="hljs-string">"ADFoJBgK96c..."</span>,  <span
-                class="hljs-comment">// the new Access Token for authorization</span>
-           <span class="hljs-string">"token_type"</span>: <span class="hljs-string">"bearer"</span>,            <span
-                class="hljs-comment">// the token type, usually bearer</span>
-           <span class="hljs-string">"expires_in"</span>: <span class="hljs-number">1199</span>,                <span
-                class="hljs-comment">// the expiration timespan, in seconds</span>
-           <span class="hljs-string">"refresh_token"</span>: <span class="hljs-string">"Gtv6a4VohaB..."</span>, <span
-                class="hljs-comment">// the new Refresh Token to request a new Access Token</span>
-           <span class="hljs-string">"user_id"</span>: <span class="hljs-number">12</span>,                     <span
-                class="hljs-comment">// the Id of the user these tokens are valid for</span>
-           <span class="hljs-string">"user_name"</span>: <span class="hljs-string">"test.user"</span>           <span
-                class="hljs-comment">// the username of the user these tokens are valid for</span>
-        }
-    </code></pre>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code class="language-json">{
+               "access_token": "FGDoJBgK96Z...", // the Access Token for authorization
+               "token_type": "bearer",// the token type, usually bearer
+               "expires_in": 1199,    // the expiration timespan, in seconds
+               "refresh_token": "K8vma4VohMb...", // the Refresh Token to request a new Access Token
+               "user_id": 12,         // the Id of the user these tokens are valid for
+               "user_name": "test.user" // the username of the user these tokens are valid for
+            }</code></pre>
+        </div>
         <p>For further questions, please contact us at
             <a href="support@helloHQ.io">support@helloHQ.io</a>.
         </p>
@@ -331,22 +338,19 @@
         <ul>
             <li>On a company, expand the default address of the company:</li>
         </ul>
-        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress
-                        </code></pre>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress</code></pre>
         <h2 id="expand-multiple-properties">Expand multiple properties</h2>
         <ul>
             <li>On a company, expand the default address and the company types of the company:</li>
         </ul>
-        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress,CompanyTypes
-                        </code></pre>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress,CompanyTypes</code></pre>
         <h2 id="expand-multiple-levels">Expand multiple levels</h2>
         <ul>
             <li>On an invoice, expand the positions and the custom fields of the positions:</li>
         </ul>
         <pre><code><span class="hljs-regexp">/v1/</span>Invoices?<span
                 class="hljs-variable">$expand</span>=Positions(<span
-                class="hljs-variable">$expand</span>=CustomFields)
-                        </code></pre>
+                class="hljs-variable">$expand</span>=CustomFields)</code></pre>
         <ul>
             <li>
                 <p>This will not work on paths with mixed cardinality, meaning that
@@ -375,21 +379,18 @@
             <li>Get all entities updated since January 26th 2018:</li>
         </ul>
         <pre><code>/v1/Companies?$filter=UpdatedOn ge <span class="hljs-number">2018</span><span
-                class="hljs-number">-01</span><span class="hljs-number">-26</span>
-                        </code></pre>
+                class="hljs-number">-01</span><span class="hljs-number">-26</span></code></pre>
         <ul>
             <li>Get all entities updated since January 26th 2018, 6:15pm:</li>
         </ul>
         <pre><code>/v1/Companies?$filter=UpdatedOn gt 2018<span class="hljs-string">-01</span><span
-                class="hljs-string">-26</span>T18:15:00<span class="hljs-string">+01</span>:00
-                        </code></pre>
+                class="hljs-string">-26</span>T18:15:00<span class="hljs-string">+01</span>:00</code></pre>
         <ul>
             <li>Get all invoices within one month:</li>
         </ul>
         <pre><code>/v1/Invoices?$filter=InvoiceDate ge <span class="hljs-number">2018</span><span
                 class="hljs-number">-03</span><span class="hljs-number">-01</span> and InvoiceDate lt <span
-                class="hljs-number">2018</span><span class="hljs-number">-04</span><span class="hljs-number">-01</span>
-                        </code></pre>
+                class="hljs-number">2018</span><span class="hljs-number">-04</span><span class="hljs-number">-01</span></code></pre>
         <h2 id="filter-by-companytype">Filter by CompanyType</h2>
         <ul>
             <li>Find all companies of a specific type, where 4002 is the Id of the CompanyType
@@ -398,8 +399,7 @@
         </ul>
         <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=CompanyTypes&amp;<span
                 class="hljs-variable">$filter</span>=CompanyTypes<span
-                class="hljs-regexp">/any(companyType: companyType/</span>Id eq <span class="hljs-number">4002</span>)
-                        </code></pre>
+                class="hljs-regexp">/any(companyType: companyType/</span>Id eq <span class="hljs-number">4002</span>)</code></pre>
         <ul>
             <li>Find all companies of a specific type, where &#39;Lieferant&#39; is the name of the
                 CompanyType:
@@ -408,8 +408,7 @@
         <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=CompanyTypes&amp;<span
                 class="hljs-variable">$filter</span>=CompanyTypes<span
                 class="hljs-regexp">/any(companyType: companyType/</span>Name eq <span
-                class="hljs-string">'Lieferant'</span>)
-                        </code></pre>
+                class="hljs-string">'Lieferant'</span>)</code></pre>
     </div>
     <div id="v1_http_convention" class="content">
         <h1 id="http-conventions">HTTP Conventions</h1>
@@ -434,25 +433,62 @@
         <h2 id="http-codes">HTTP Codes</h2>
         <p>Each response to an API request indicates the success with its status code.</p>
         <h3 id="success-status-codes">Success Status Codes</h3>
-        <pre>
-        <code>
-            GET           200 (OK)     
-            POST          201 (Created)     
-            PUT           200 (OK)     
-            DELETE        204 (No content)     
-            do.Action()   200 (OK)            If base entity was changed
-            do>.Action()  201 (Created)      If new entity was created
-        </code>
-    </pre>
+        <div class="hq-table-container">
+            <table>
+                <tr>
+                    <td class="http-method">GET</td>
+                    <td>200 (OK)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST</td>
+                    <td>201 (Created)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">PUT</td>
+                    <td>200 (OK)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">DELETE</td>
+                    <td>204 (No content)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">do.Action()</td>
+                    <td>200 (OK) If base entity was changed</td>
+                </tr>
+                <tr>
+                    <td class="http-method">do&gt;.Action()</td>
+                    <td>201 (Created) If new entity was created</td>
+                </tr>
+            </table>
+        </div>
+        
         <p>The body of the reponse with status code 200 and 201 contain the changed/created
             object. Responses with code 204 always return an empty body.</p>
         <h3 id="failure-status-codes">Failure Status Codes</h3>
-        <pre><code>
-        GET / PUT / DELETE / do.Action()   404 (Not Found)     No object found / Invalid Id
-        POST / PUT / do.Action()           400 (Bad request)   Missing request body
-        POST / PUT / do.Action()           400 (Bad request)   Missing request argument
-        POST / PUT / do.Action()           400 (Bad request)   Validation failed
-    </code></pre>
+        <div class="hq-table-container">
+            <table>
+                <tr>
+                    <td class="http-method">GET / PUT / DELETE / do.Action()</td>
+                    <td>404 (Not Found)</td>
+                    <td>No object found / Invalid Id</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Missing request body</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Missing request argument</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Validation failed</td>
+                </tr>
+            </table>
+        </div>
         <h2 id="dates-and-times">Dates and Times</h2>
         <p>The date and time information is generally in UTC. The client is responsible for
             converting the date and time information to user time. The user object contains
@@ -480,6 +516,7 @@
     <!--content v2-->
 
     <div id="v2_auth" class="content">
+        <h1 id="v2">API V2</h1>
         <h2>Authentication</h2>
         <p>Authentication is mandatory to access the functions of the helloHQ API. You must authenticate with a valid
             access token, which verifies your identity and ensures you have the necessary permissions to access the
@@ -534,98 +571,101 @@
         <p>The helloHQ API supports a huge set of filters that can be executed on all our API controllers.</p>
         <p></p>
         <p>There is one important step. Please encode the URL's you use:</p>
-        <pre>
-        <code>
-            filter=name eq 'hello %26 hq' <- correct
-            filter=name eq 'helllo & hq' <- incorrect
-        </code>
-   </pre>
+        <div class="code-container">
+            <pre class="language-http"><code>filter=name eq 'hello %26 hq' <- correct
+ filter=name eq 'helllo & hq' <- incorrect</code></pre>
+            
+        </div>
+        
 
         <h2>Operator</h2>
         <p>We support a bunch of operation to filter your data exactly to your needs.</p>
-        <table>
-            <tr>
-                <th>Operator</th>
-                <th>Description</th>
-                <th>Example</th>
-            </tr>
-            <tr>
-                <td>eq</td>
-                <td>Equal</td>
-                <td>
-                    <code>filter=name eq 'hellohq'</code>
-                </td>
-            </tr>
-            <tr>
-                <td>ne</td>
-                <td>Not equal</td>
-                <td><code>name ne 'hellohq'</code></td>
-            </tr>
-            <tr>
-                <td>gt</td>
-                <td>Greater than</td>
-                <td><code>price gt 18</code></td>
-            </tr>
-            <tr>
-                <td>ge</td>
-                <td>Greater than or equal</td>
-                <td><code>price ge 18</code></td>
-            </tr>
-            <tr>
-                <td>lt</td>
-                <td>Less than</td>
-                <td><code>price lt 18</code></td>
-            </tr>
-            <tr>
-                <td>le</td>
-                <td>Less than or equal</td>
-                <td><code>price le 18</code></td>
-            </tr>
-            <tr>
-                <td>and</td>
-                <td>Logical and</td>
-                <td><code>price ge 18 and price le 30</code></td>
-            </tr>
-            <tr>
-                <td>or</td>
-                <td>Logical or</td>
-                <td><code>price lt 18 or price gt 30</code></td>
-            </tr>
-            <tr>
-                <td>not</td>
-                <td>Logical negation</td>
-                <td><code>not price eq 18</code></td>
-            </tr>
-        </table>
-
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>eq</td>
+                    <td>Equal</td>
+                    <td>
+                        <code>filter=name eq 'hellohq'</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ne</td>
+                    <td>Not equal</td>
+                    <td><code>name ne 'hellohq'</code></td>
+                </tr>
+                <tr>
+                    <td>gt</td>
+                    <td>Greater than</td>
+                    <td><code>price gt 18</code></td>
+                </tr>
+                <tr>
+                    <td>ge</td>
+                    <td>Greater than or equal</td>
+                    <td><code>price ge 18</code></td>
+                </tr>
+                <tr>
+                    <td>lt</td>
+                    <td>Less than</td>
+                    <td><code>price lt 18</code></td>
+                </tr>
+                <tr>
+                    <td>le</td>
+                    <td>Less than or equal</td>
+                    <td><code>price le 18</code></td>
+                </tr>
+                <tr>
+                    <td>and</td>
+                    <td>Logical and</td>
+                    <td><code>price ge 18 and price le 30</code></td>
+                </tr>
+                <tr>
+                    <td>or</td>
+                    <td>Logical or</td>
+                    <td><code>price lt 18 or price gt 30</code></td>
+                </tr>
+                <tr>
+                    <td>not</td>
+                    <td>Logical negation</td>
+                    <td><code>not price eq 18</code></td>
+                </tr>
+            </table>
+        </div>
         <h2>Data types</h2>
 
-        <table>
-            <tr>
-                <th>Data type</th>
-                <th>Example</th>
-            </tr>
-            <tr>
-                <td>String</td>
-                <td><code>name eq 'hellohq'</code></td>
-            </tr>
-            <tr>
-                <td>Boolean</td>
-                <td><code @onclick="">isActive eq true</code></td>
-            </tr>
-            <tr>
-                <td>Integer</td>
-                <td><code>price eq 18</code></td>
-            </tr>
-            <tr>
-                <td>Decimal</td>
-                <td><code>price eq 18.5</code></td>
-            </tr>
-            <tr>
-                <td>DateTime</td>
-                <td><code>createdOn eq datetime'2021-01-01T12:00:00Z'</code></td>
-            </tr>
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Data type</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>String</td>
+                    <td><code>name eq 'hellohq'</code></td>
+                </tr>
+                <tr>
+                    <td>Boolean</td>
+                    <td><code @onclick="">isActive eq true</code></td>
+                </tr>
+                <tr>
+                    <td>Integer</td>
+                    <td><code>price eq 18</code></td>
+                </tr>
+                <tr>
+                    <td>Decimal</td>
+                    <td><code>price eq 18.5</code></td>
+                </tr>
+                <tr>
+                    <td>DateTime</td>
+                    <td><code>createdOn eq datetime'2021-01-01T12:00:00Z'</code></td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div id="v2_order" class="content">
         <h2>Ordering</h2>
@@ -709,8 +749,16 @@
 
 
 <script>
+    
 
     window.onload = function () {
+        Prism.languages.http = Prism.languages.extend('http', {
+            'method': {
+                pattern: /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD)\b/gm,
+                alias: 'keyword'
+            }
+        });
+        
         // Begin Swagger UI call region
         const ui = SwaggerUIBundle({
             url: "swagger19.json", //Location of Open API spec in the repo
@@ -744,6 +792,13 @@
         // window.ui = ui
     }
 
+    function copyToClipboard(container) {
+        // Find the nearest <code> block related to the clicked button
+        var codeBlock = container.querySelector('code').innerText;
+
+        navigator.clipboard.writeText(codeBlock);
+    }
+    
     function scrollToHeadline(id, event) {
         if (event) {
             event.preventDefault();
@@ -780,15 +835,6 @@
         document.getElementById(parentContentId).classList.add('active');
 
         // document.getElementById("default-content").style.display = 'none';
-    }
-
-    function copyToClipboard(codeBlock) {
-        const code = codeBlock.innerText;
-        navigator.clipboard.writeText(code).then(() => {
-            alert('Code kopiert!');
-        }, () => {
-            alert('Fehler beim Kopieren des Codes.');
-        });
     }
 
 </script>

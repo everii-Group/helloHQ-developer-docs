@@ -26,6 +26,7 @@ body, html {
   --gray-3-rgb: 167, 188, 215; /* RGB equivalent of #a7bcd7 */
   --gray-4: #587292;
   --gray-4-rgb: 88, 114, 146; /* RGB equivalent of #587292 */
+  --gray-5: #2a2f3d;
   --color-text-normal: var(--gray-4);
 
   --color-ui-purple: #D48DFA;
@@ -161,7 +162,6 @@ body {
   border-radius: 5px;
 }
 .dropdown-content a {
-  color: black;
   text-decoration: none;
   display: block;
   height: 50px;
@@ -192,22 +192,17 @@ body {
 }
 
 pre {
-  width: fit-content;
-  border-radius: .25rem;
-  padding-right: 20px;
-  font-family: monospace;
-  --tw-ring-inset: inset;
-  font-size: .9em;
-  font-weight: inherit;
-  background-color: var(--gray-4);
-  &:hover{
-    background-color: var(--gray-3);
+  
+  code.language-http{
+    span.token.method{
+        color: var(--color-ui-purple);
+    }
   }
-  code {
-    color: white;
-    background-color: unset;
-    &:hover{
-      background-color:unset;
+  code.language-json {
+    white-space: pre-line !important;
+    
+    span.token.property{
+      padding-left: 20px;
     }
   }
 }
@@ -220,23 +215,63 @@ code {
   font-weight: inherit;
   background-color: var(--gray-4);
   color: white;
-  padding: 7px;
-  &:hover{
-    background-color: var(--gray-3);
+  padding: 4px;
+
+  .hljs-variable
+  {
+    color: var(--light-red-2)
   }
 }
-
-.copy-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  font-size: 16px;
+.hq-table-container{
+  table{
+    border-spacing: 10px;
+    padding: 7px;
+    background-color: var(--gray-5);
+    *{
+      color: white;
+      text-align: left;
+    }
+    .http-method{
+      color: var(--light-red-2);
+    }
+  }
 }
+.code-container{
+  position: relative;
+  display: inline-block;
+  *{
+    user-select: none;
+  }
+  &:hover {
+    cursor: pointer;
+    .copy-button{
+      visibility: visible;
+    }
+  }
+  pre {
+    background-color: var(--gray-5) !important;
+    &:active{
+      background-color: var(--gray-4) !important;
+    }
+  }
+  
+  .copy-button {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    top: 9px;
+    background-color: var(--gray-5);
+    color: var(--light-red-2);
+    border: none;
+    padding: 20px 15px;
+    cursor: pointer;
+    font-size: 13px;
+    &:hover{
+      background-color: #0056b3;
+    }
+  }
+}
+  
 .copy-button i {
   margin-left: 5px;
 }
@@ -322,14 +357,43 @@ code {
   animation: fadeEffect 1s; /* Fading effect takes 1 second */
 }
 
-table{
-  display: table;
-  border-spacing: 22px 5px;
-  text-align: center;
+.table-wrapper {
+  background-color: var(--gray-2);
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
+  table {
+    display: table;
+    border-spacing: 0;
+    text-align: center;
+
+    th {
+      border-bottom: 1px solid var(--gray-5);
+    }
+
+    td {
+      padding: 5px 10px;
+    }
+
+    td + td {
+      border-left: 1px solid var(--gray-5);
+    }
+  }
 }
 
 /* Go from zero to full opacity */
 @keyframes fadeEffect {
   from {opacity: 0;}
   to {opacity: 1;}
+}
+
+#v1_endpoints,
+#v2_endpoints {
+  pre{
+    background: none;
+  }
+  max-width: 1460px;
+  margin: auto;
+  background: var(--gray-2);
+  border: 1px solid var(--gray-4);
 }
