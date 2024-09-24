@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQ Developer Guide</title>
+    <link rel="shortcut icon" href="./img/favicon-32x32.png" type="image/x-icon">
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Load the latest Swagger UI code and style from npm using unpkg.com -->
+    <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,800"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        Prism.languages.http =
+        {
+            'method': {
+                pattern: /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD)\b/gm,
+            },
+            'keyword': {
+                pattern: /[?&](client_id|state|redirect_uri|scope|response_type|code|client_secret|grant_type|refresh_token)/gm,
+            }
+            
+        };
+        Prism.languages.webmanifest = Prism.languages.http;
+
+    </script>
+    <title>helloHQ API documentation</title>
+</head>
+<body>
+<div class="navbar">
+    <a href="https://developer-v2.hellohq.io">
+        <img class="_cell logo" src="./img/developer-logo.svg" border="0">
+    </a>
+    <ul>
+        <li class="dropdown">
+            <a id="api_v1" href="javascript:void(0)">API v1</a>
+            <div class="dropdown-content">
+                <a href="#" onclick="scrollToHeadline('v1_auth')">Authentication</a>
+                <a href="#" onclick="scrollToHeadline('v1_expand')">Expand</a>
+                <a href="#" onclick="scrollToHeadline('v1_filter')">Filter</a>
+                <a href="#" onclick="scrollToHeadline('v1_http_convention')">HTTP Conventions</a>
+                <a href="#" onclick="scrollToHeadline('v1_endpoints')">Endpoints</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a id="api_v2" href="javascript:void(0)">API v2</a>
+            <div class="dropdown-content">
+                <a href="#content1" onclick="scrollToHeadline('v2_auth')">Authentication</a>
+                <a href="#content5" onclick="scrollToHeadline('v2_permissions')">Permissions</a>
+                <a href="#content2" onclick="scrollToHeadline('v2_filter')">Filtering</a>
+                <a href="#content3" onclick="scrollToHeadline('v2_order')">Ordering</a>
+                <a href="#content4" onclick="scrollToHeadline('v2_pagination')">Pagination</a>
+                <a href="#content6" onclick="scrollToHeadline('v2_rate')">Rate Limits</a>
+                <a href="#content6" onclick="scrollToHeadline('v2_endpoints')">Endpoints</a>
+            </div>
+        </li>
+        <li>
+            <a href="https://github.com/hellohq-io/hellohq.docs/issues" target="_blank">Community</a>
+        </li>
+    </ul>
+</div>
+
+<div id="content-wrapper">
+    <!--inital contnet-->
+    <div style="padding:25px 45px 20px 40px;">
+        <div id="default-content">
+
+            <h1><strong>Hi, nice to see you!</strong></h1>
+
+            <p>This is the developer guide for the helloHQ API, which allows developers access to a
+                wide range of entities and business logic of the helloHQ.</p>
+            <p><strong>Base URL:</strong> https://api.hellohq.io</p>
+            <h1 id="introduction">Introduction</h1>
+            <p>
+                The helloHQ API is currently available in two versions. There are significant differences between the
+                two
+                versions as they use different standards and technologies. For detailed information, please see the
+                individual sections.
+            </p>
+
+            <h3>v1</h3>
+            <p>
+                The initial release of our API is built on the OData 4.0 standard, providing comprehensive access to
+                most aspects of the helloHQ platform.<br>
+                This version covers all entities available in helloHQ 1.9, ensuring broad compatibility and
+                functionality.<br><br>
+                <i>Note: However, please note that this version does not support the new finance processes.</i>
+            </p>
+
+            <h3>v2</h3>
+            <p>
+                The second version of our API is designed around the REST standard, without the use of OData.<br>
+                With this version you can handle all operations regarding the new finances process.<br><br>
+                <i>Note: This version powers the new helloHQ 2.0 API and is currently under active development, with new
+                    endpoints being added on an ongoing basis.</i>
+            </p>
+
+            <p><strong>Before you get started, you need to register your client application in the helloHQ
+                admin panel.</strong></p>
+
+            <h1 id="further-references">Further References</h1>
+            <p>Please refer to the following pages and guides to learn how to use our API.</p>
+            <ul>
+                <li><strong>OData</strong>: <a href="http://www.odata.org/">http://www.odata.org/</a></li>
+                <li><strong>OData v4.0</strong>: <a
+                        href=http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html">http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html</a>
+                </li>
+                <li><strong>OAuth 2.0</strong>: <a href="http://oauth.net/2/">http://oauth.net/2/</a></li>
+                <li><strong>helloHQ Help</strong>: <a href="http://help.hellohq.io">http://help.hellohq.io</a></li>
+            </ul>
+        </div>
+        
+
+    </div>
+
+
+    <!--content v1-->
+
+    <div id="v1_auth" class="content">
+        <h1 id="v1">API V1</h1>
+        <h2 id="authentication">Authentication</h2>
+        <p>The HQ API uses <a href="https://oauth.net/2/">OAuth 2.0</a> for authentication.</p>
+        <h2 id="getting-started">Getting Started</h2>
+        <p>OAuth 2.0 is an authentication framework used for secure user authentication.
+            With the typical OAuth 2.0 authentication flows, third-party applications do not
+            receive the user&#39;s password but only a token which is valid for a limited time.</p>
+        <p>To uniquely identify the client, each client application needs to be registered
+            first. The client receives an <code>App Id</code> and <code>App Secret</code> which they use to
+            authenticate against the API.</p>
+        <p>When a user wants to use the client application, the user should be redirected to our
+            login page to provide username and password. After a successful login, the client
+            application receives an <code>Access Token</code> and <code>Refresh Token</code>. These can be used to
+            authenticate against the API. From then on, the user is no longer involved in the
+            authentication process.</p>
+        <h3 id="client-application">Client Application</h3>
+        <p>A client application needs to be registered in your HQ. To do so, go to the
+            administration panel and add a new client application. You will be asked to
+            provide a unique name, and a display name for your client.</p>
+        <h3 id="app-id">App Id</h3>
+        <p>The <code>App Id</code> used for OAuth 2.0 consists of your HQ customer id as well as the id of the
+            client application you created in the HQ: <code>{customer-id}-{client-id}</code>. For
+            example, <code>12345-clientapp</code>, where <code>12345</code> is your customer id and
+            <code>clientapp</code>
+            is the
+            id of the client. After you registered a client application in your HQ, you can
+            find the <code>App Id</code> in the list in the administration panel.</p>
+        <h3 id="app-secret">App Secret</h3>
+        <p>The <code>App Secret</code> is generated in the administration section of your HQ. It is located
+            next to the <code>App Id</code> in the administration panel list. The secret will be used to
+            authenticate your client application when requesting a token.</p>
+        <h3 id="scopes">Scopes</h3>
+        <p>The OAuth 2.0 authentication flow uses scopes to define which rights are granted to the
+            application by the user. The HQ API currently supports the following scopes:</p>
+        <ul>
+            <li><code>read_all</code>: read access to all resources</li>
+            <li><code>write_all</code>: write access to all resources</li>
+        </ul>
+        <h3 id="access-token">Access Token</h3>
+        <p>The <code>Access Token</code> is used to authenticate against the API resources. It needs to
+            be included in every request to the API. Each user must use their own unique <code>Access Token</code>,
+            since such tokens are only valid for the associated user. The toke is usually valid for a few
+            days only.</p>
+        <h3 id="refresh-token">Refresh Token</h3>
+        <p>The <code>Refresh Token</code> is used to get a new <code>Access Token</code>, once it has expired. A
+            <code>Refresh Token</code> only expires when the user manually revokes access for the client
+            application.
+        </p>
+        <h3 id="oauth-endpoints">OAuth Endpoints</h3>
+        <p>The OAuth endpoints are required to get an <code>Access Token</code> and exchange a <code>Refresh
+            Token</code> for a new <code>Access Token</code>:</p>
+        <ul>
+            <li><code>/Account/Authorize</code> may be used to initially retrieve an authorization code</li>
+            <li><code>/Token</code> may be used to retrieve an authorization code for an <code>Access Token</code>
+                or to get a new <code>Access Token</code> in combination with the <code>Refresh Token</code></li>
+        </ul>
+        <h3 id="authorization-flow">Authorization Flow</h3>
+        <p>The OAuth 2.0 Authorization <code>Code Grant</code> is the default authorization flow and
+            mainly used by client applications. It is described here in detail:</p>
+        <h4 id="authorization-request">Authorization Request</h4>
+        <p>The client constructs the request URI by adding the following parameters to the
+            query string of the authorization endpoint URI using the
+            <code>application/x-www-form-urlencoded</code> format. Then, the client directs the user to
+            the constructed URI using a browser window. The user is asked to log in,
+            provides their username and password, and grants the requested permissions to your client
+            application.
+        </p>
+        <p><strong>Parameter:</strong></p>
+        <ul>
+            <li><code>ClientId</code>: the client id of the authentication client</li>
+            <li><code>State</code>: an arbitrary state string</li>
+            <li><code>RedirectUri</code>: the URI to redirect the browser to after the user granted the
+                access
+            </li>
+            <li><code>Scope</code>: a space-separated list of API scopes</li>
+        </ul>
+        <p><strong>Example:</strong></p>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">GET https://api.hqlabs.de/Account/Authorize?response_type=code&client_id=1234-testapp&state=xyz&redirect_uri=https://client.example.com/cb&scope=read_all write_all</code></pre>
+        </div>
+        <p><strong>Note:</strong> the generated URL needs to be opened in a browser window so that the
+            user can log in and authorize the application.</p>
+        <p>All query parameters (especially the <code>RedirectUri</code>) should be properly URL-encoded.</p>
+        <p>If the user is already granted the same scopes to the client application, the
+            UI will not be rendered and the redirect with the authorization code happens
+            automatically.</p>
+        <h4 id="user-authentication">User Authentication</h4>
+        <p>The user logs in, and grants or revokes the access request.</p>
+        <h4 id="authorization-response">Authorization Response</h4>
+        <p>If the user grants the access request, the authorization server issues an
+            authorization code and delivers it to the client by adding the following
+            parameters to the query string of the redirection URI using the
+            <code>application/x-www-form-urlencoded</code> format.
+        </p>
+        <p><strong>Parameter:</strong></p>
+        <ul>
+            <li><code>RedirectUri</code>: the previously specified redirect URI</li>
+            <li><code>AuthenticationCode</code>: the authentication code that can be exchanged for a token</li>
+            <li><code>State</code>: an arbitrary state string</li>
+        </ul>
+        <p><strong>Example:</strong></p>
+        <p><code>302 Found</code></p>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">https://client.example.com/cb?code=MWG5HTnFn9n8HJ&amp;state=xyz</code></pre>
+        </div>
+        <h4 id="access-token-request">Access Token Request</h4>
+        <p>The client makes a request to the token endpoint by sending the following
+            parameters in the request body using the <code>application/x-www-form-urlencoded</code> format.</p>
+        <p><strong>Parameter:</strong></p>
+        <ul>
+            <li><code>AuthenticationCode</code>: the code that was sent in the previous response</li>
+            <li><code>RedirectUri</code>: the previously specified redirect URI</li>
+            <li><code>Authorization</code>: the <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization">HTTP Authorization
+                header</a></li>
+        </ul>
+        <p><strong>Note:</strong> To construct a proper HTTP Authorization header for <a
+                href="https://en.wikipedia.org/wiki/Basic_access_authentication">Basic Access Authentication</a>, you
+            need
+            to encode your <code>App Id</code> and <code>App Secret</code> using <a
+                    href="https://en.wikipedia.org/wiki/Base64">Base64</a>, and add it
+            to the <code>Authorization</code> header as follows: <code>Authorization: Basic
+                Base64({AppId}:{AppSecret})</code></p>
+        <p><strong>Example:</strong></p>
+        <p><strong>Url:</strong></p>
+        <p><code>POST https://api.hqlabs.de/Token</code></p>
+        <p><strong>Header:</strong></p>
+        <span class="hljs-variable">Content-Type</span>=application/x-www-form-urlencoded
+        <p><strong>Body:</strong></p>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">POST https://api.hqlabs.de/Token?grant_type=authorization_code
+                            &amp;code=MWG5HTnFn9n8HJ => 'Code from authorize call'
+                            &amp;client_id=1234-testapp  =>'From hellHQ UI'
+                            &amp;client_secret=fkgjqoer9tfiealdkcmakwhdf  =>'From hellHQ UI'
+                            &amp;scope=read_all write_all</code></pre>
+        </div>
+
+        <p><strong>Note:</strong> All query parameters (especially the <code>RedirectUri</code>) should be properly
+            URL-encoded.</p>
+        <h4 id="access-token-response">Access Token Response</h4>
+        <p>If the access token request is valid and authorized, the authorization server
+            issues an Access Token and Refresh Token. If the request failed or is invalid,
+            the authorization server returns an error response.</p>
+        <p><strong>Parameter:</strong></p>
+        <ul>
+            <li><code>AuthenticationCode</code>: the code that was sent in the previous response</li>
+            <li><code>RedirectUri</code>: the previously specified redirect uri</li>
+        </ul>
+        <p><strong>Example:</strong></p>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code class="language-json">{
+               "access_token": "FGDoJBgK96Z...", // the Access Token for authorization
+               "token_type": "bearer",// the token type, usually bearer
+               "expires_in": 1199,    // the expiration timespan, in seconds
+               "refresh_token": "K8vma4VohMb...", // the Refresh Token to request a new Access Token
+               "user_id": 12,         // the Id of the user these tokens are valid for
+               "user_name": "test.user" // the username of the user these tokens are valid for
+            }</code></pre>
+        </div>
+        <p>After receiving the Access Token, you can use it to request resources from the
+            API.</p>
+        <h4 id="resource-request">Resource Request</h4>
+        <p>To retrieve resources from the API, add the Access Token to the Authorization
+            header in the following form: Bearer {AccessToken}</p>
+        <p><strong>Example:</strong></p>
+        <pre><code><span class="hljs-symbol">Authorization</span>: <span class="hljs-keyword">Bearer </span>FGDoJBgK96Z...</code></pre>
+        <p>Access Tokens expire and need to be refreshed with the Refresh Token.</p>
+        <h4 id="refresh-token-request">Refresh Token Request</h4>
+        <p>Every Access Token expires after a time, usually after 30 days. You can use the
+            Refresh Token to retrieve a new Access Token. The Refresh Token only expires
+            when the user revokes the token.</p>
+        <p><strong>Parameter:</strong></p>
+        <ul>
+            <li><code>GrantType</code>: the grant type needs to be set to refresh_token</li>
+            <li><code>RefreshToken</code>: the previously received Refresh Token</li>
+            <li><code>Authorization</code>: This request requires the HTTP Basic Authentication header.
+                You need to encode your {appId}:{appSecret} using the Base64 method and add it
+                to the Authorization header, like this: Authorization: Basic
+                Base64({AppId}:{AppSecret})
+            </li>
+        </ul>
+        <p><strong>Example:</strong></p>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button" >Copy</button>
+            <pre><code class="language-http">POST https://api.hqlabs.de/Token?grant_type=refresh_token&amp;refresh_token=K8vma4VohMb...</code></pre>
+        </div>
+        <p><strong>Example:</strong></p>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code class="language-json">{
+               "access_token": "FGDoJBgK96Z...", // the Access Token for authorization
+               "token_type": "bearer",// the token type, usually bearer
+               "expires_in": 1199,    // the expiration timespan, in seconds
+               "refresh_token": "K8vma4VohMb...", // the Refresh Token to request a new Access Token
+               "user_id": 12,         // the Id of the user these tokens are valid for
+               "user_name": "test.user" // the username of the user these tokens are valid for
+            }</code></pre>
+        </div>
+        <p>For further questions, please contact us at
+            <a href="support@helloHQ.io">support@helloHQ.io</a>.
+        </p>
+    </div>
+    <div id="v1_expand" class="content">
+        <h1 id="expand">Expand</h1>
+        <p>Expands can be used to retrieve more data in one query. They allow to get
+            related entities and navigation properties from an entity.</p>
+        <p>In the URL, add the following to the <code>$expand=</code> parameter.</p>
+        <p>Here, some examples for using the <code>expand</code> option are shown.</p>
+        <h2 id="expand-one-property">Expand one property</h2>
+        <ul>
+            <li>On a company, expand the default address of the company:</li>
+        </ul>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress</code></pre>
+        <h2 id="expand-multiple-properties">Expand multiple properties</h2>
+        <ul>
+            <li>On a company, expand the default address and the company types of the company:</li>
+        </ul>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=DefaultAddress,CompanyTypes</code></pre>
+        <h2 id="expand-multiple-levels">Expand multiple levels</h2>
+        <ul>
+            <li>On an invoice, expand the positions and the custom fields of the positions:</li>
+        </ul>
+        <pre><code><span class="hljs-regexp">/v1/</span>Invoices?<span
+                class="hljs-variable">$expand</span>=Positions(<span
+                class="hljs-variable">$expand</span>=CustomFields)</code></pre>
+        <ul>
+            <li>
+                <p>This will not work on paths with mixed cardinality, meaning that
+                    <code>Projects -&gt; Positions -&gt; CustomFields</code> works while
+                    <code>Projects -&gt; Company -&gt; CustomFields</code> will fail. In those cases, the best solution
+                    is
+                    to
+                    fetch projects as well as companies with their custom fields, and merge the results on the client.
+                </p>
+            </li>
+            <li>
+                <p>Be aware that multiple expanded levels can create long-running queries as well as large result
+                    sets.</p>
+            </li>
+        </ul>
+    </div>
+    <div id="v1_filter" class="content">
+        <h1 id="filter">Filter</h1>
+        <p>Filter are useful to construct queries against our API. This way, you don&#39;t need
+            to retrieve all data and filter on the client.</p>
+        <p>In the URL, add the following to the <code>$filter=</code> parameter.</p>
+        <p>If you want to filter on a sub-entity, make sure to expand the entity first.</p>
+        <p>Here, some examples for using the <code>filter</code> option are shown.</p>
+        <h2 id="filter-by-date-and-time">Filter by date and time</h2>
+        <ul>
+            <li>Get all entities updated since January 26th 2018:</li>
+        </ul>
+        <pre><code>/v1/Companies?$filter=UpdatedOn ge <span class="hljs-number">2018</span><span
+                class="hljs-number">-01</span><span class="hljs-number">-26</span></code></pre>
+        <ul>
+            <li>Get all entities updated since January 26th 2018, 6:15pm:</li>
+        </ul>
+        <pre><code>/v1/Companies?$filter=UpdatedOn gt 2018<span class="hljs-string">-01</span><span
+                class="hljs-string">-26</span>T18:15:00<span class="hljs-string">+01</span>:00</code></pre>
+        <ul>
+            <li>Get all invoices within one month:</li>
+        </ul>
+        <pre><code>/v1/Invoices?$filter=InvoiceDate ge <span class="hljs-number">2018</span><span
+                class="hljs-number">-03</span><span class="hljs-number">-01</span> and InvoiceDate lt <span
+                class="hljs-number">2018</span><span class="hljs-number">-04</span><span class="hljs-number">-01</span></code></pre>
+        <h2 id="filter-by-companytype">Filter by CompanyType</h2>
+        <ul>
+            <li>Find all companies of a specific type, where 4002 is the Id of the CompanyType
+                &#39;Customer&#39;:
+            </li>
+        </ul>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=CompanyTypes&amp;<span
+                class="hljs-variable">$filter</span>=CompanyTypes<span
+                class="hljs-regexp">/any(companyType: companyType/</span>Id eq <span class="hljs-number">4002</span>)</code></pre>
+        <ul>
+            <li>Find all companies of a specific type, where &#39;Lieferant&#39; is the name of the
+                CompanyType:
+            </li>
+        </ul>
+        <pre><code><span class="hljs-regexp">/v1/</span>Companies?<span class="hljs-variable">$expand</span>=CompanyTypes&amp;<span
+                class="hljs-variable">$filter</span>=CompanyTypes<span
+                class="hljs-regexp">/any(companyType: companyType/</span>Name eq <span
+                class="hljs-string">'Lieferant'</span>)</code></pre>
+    </div>
+    <div id="v1_http_convention" class="content">
+        <h1 id="http-conventions">HTTP Conventions</h1>
+        <h2 id="response-types">Response Types</h2>
+        <p>Generally, all API responses, as well as the POST and PUT bodies, are in JSON
+            and follow the OData 4 definition.</p>
+        <p>The OData response wraps the actual data in the data field and adds additional
+            metadata.</p>
+        <p>However, there are some cases where the API provides access to binary data, like
+            PDFs and images.</p>
+        <p>Every document, for example invoices and quotations, can be retrieved as a
+            generated PDF file. The PDF is generated on the fly when the document is in a
+            draft state. After the document was sent, the PDF is archived and the archived
+            PDF is returned in the API. </p>
+        <p>You can access the metadata of the document file like this:
+            <code>/v1/Invoices(id)/DocumentFile</code>
+        </p>
+        <p>You can access the binary stream (PDF) of the document file like this:
+            <code>/v1/Invoices(id)/DocumentFile/$value</code>
+        </p>
+        <p>For further questions, please contact us at support@helloHQ.io.</p>
+        <h2 id="http-codes">HTTP Codes</h2>
+        <p>Each response to an API request indicates the success with its status code.</p>
+        <h3 id="success-status-codes">Success Status Codes</h3>
+        <div class="hq-table-container">
+            <table>
+                <tr>
+                    <td class="http-method">GET</td>
+                    <td>200 (OK)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST</td>
+                    <td>201 (Created)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">PUT</td>
+                    <td>200 (OK)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">DELETE</td>
+                    <td>204 (No content)</td>
+                </tr>
+                <tr>
+                    <td class="http-method">do.Action()</td>
+                    <td>200 (OK) If base entity was changed</td>
+                </tr>
+                <tr>
+                    <td class="http-method">do&gt;.Action()</td>
+                    <td>201 (Created) If new entity was created</td>
+                </tr>
+            </table>
+        </div>
+        
+        <p>The body of the reponse with status code 200 and 201 contain the changed/created
+            object. Responses with code 204 always return an empty body.</p>
+        <h3 id="failure-status-codes">Failure Status Codes</h3>
+        <div class="hq-table-container">
+            <table>
+                <tr>
+                    <td class="http-method">GET / PUT / DELETE / do.Action()</td>
+                    <td>404 (Not Found)</td>
+                    <td>No object found / Invalid Id</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Missing request body</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Missing request argument</td>
+                </tr>
+                <tr>
+                    <td class="http-method">POST / PUT / do.Action()</td>
+                    <td>400 (Bad request)</td>
+                    <td>Validation failed</td>
+                </tr>
+            </table>
+        </div>
+        <h2 id="dates-and-times">Dates and Times</h2>
+        <p>The date and time information is generally in UTC. The client is responsible for
+            converting the date and time information to user time. The user object contains
+            the selected timezone of the user. Date and time properties in UTC end on ...On,
+            for example StartOn or CreatedOn.</p>
+        <p>There are, however, a few exceptions, where only the date is relevant. In these
+            cases, the date information is represented without a timezone and should not be
+            converted. Date properties end on ...Date, for example StartDate or ShownDate.</p>
+        <h2 id="actions">Actions</h2>
+        <p>Actions are POST operations performed on specific API objects. Sometimes actions
+            need specific parameters for the performed operation but this is not necessary
+            every one of them. An action is mostly a more complex operations handled on the
+            server which usually perform different data manipulations and object creations.
+            Remember that an action should not be invoked too frequently on the same object
+            because of the data manipulation. One call is sufficient to get the certain
+            outcome.</p>
+        <p>When new objects are created during an action, in most cases the newly generated
+            action is beeing returned. The return value can be seen in the action
+            description iteself.</p>
+    </div>
+    <div id="v1_endpoints" class="content">
+    </div>
+
+
+    <!--content v2-->
+
+    <div id="v2_auth" class="content">
+        <h1 id="v2">API V2</h1>
+        <h2>Authentication</h2>
+        <p>Authentication is mandatory to access the functions of the helloHQ API. You must authenticate with a valid
+            access token, which verifies your identity and ensures you have the necessary permissions to access the
+            requested resources.
+
+        </p>
+        <p>At present, you can generate an <b>Access Token</b> within helloHQ to use the API. In the future, we plan to
+            implement an OAuth flow for authentication..</p>
+
+        <h3>Access Token</h3>
+        <p>To get an access token please go into your helloHQ system. <br>
+            Under <b>Admin => Settings => API-Clients</b> you can create and mange your access tokens.</p>
+        <br>
+        <p>With a click on the green plus button you can create a new token:</p>
+        <img src="./img/create_client.png"/>
+
+        <p>In the overview you can see all token's of your system. With the 3 dot menu on the right site you can easily
+            copy
+            or delete a token.</p>
+        <img src="img/api_clients.png"/>
+
+        <p>The token contains much information about the client and the user. All option you can specify when a new
+            token is
+            created.</p>
+    </div>
+    <div id="v2_permissions" class="content">
+        <h2>Permissions</h2>
+        <p>For every API the permission management is important.</p>
+        <p>In helloHQ you can choose between two types of access tokens. A sync token and a user related token.</p>
+
+        <h3>Sync Token</h3>
+        <p>
+            The sync token is used to access the API without a user context.
+            This token is used to sync data between helloHQ and your application.
+            <br/>
+            This mean the token has access to all data in the system.
+        </p>
+
+        <h3>User Token</h3>
+        <p>
+            The user token is used to access the API with a user context.
+            In this case, the token contain information about the user.
+            <br/>
+            With this you will retrieve only data the user has access to.
+            Also, when you create data, the data are create in the subsystem the user is in.
+            But this is only relevant if you use subsystems in helloHQ.
+        </p>
+    </div>
+    <div id="v2_filter" class="content">
+        <h1>Filtering</h1>
+
+        <p>The helloHQ API supports a huge set of filters that can be executed on all our API controllers.</p>
+        <p></p>
+        <p>There is one important step. Please encode the URL's you use:</p>
+        <div class="code-container">
+            <pre class="language-http"><code>filter=name eq 'hello %26 hq' <- correct
+ filter=name eq 'helllo & hq' <- incorrect</code></pre>
+            
+        </div>
+        
+
+        <h2>Operator</h2>
+        <p>We support a bunch of operation to filter your data exactly to your needs.</p>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Operator</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>eq</td>
+                    <td>Equal</td>
+                    <td>
+                        <code>filter=name eq 'hellohq'</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ne</td>
+                    <td>Not equal</td>
+                    <td><code>name ne 'hellohq'</code></td>
+                </tr>
+                <tr>
+                    <td>gt</td>
+                    <td>Greater than</td>
+                    <td><code>price gt 18</code></td>
+                </tr>
+                <tr>
+                    <td>ge</td>
+                    <td>Greater than or equal</td>
+                    <td><code>price ge 18</code></td>
+                </tr>
+                <tr>
+                    <td>lt</td>
+                    <td>Less than</td>
+                    <td><code>price lt 18</code></td>
+                </tr>
+                <tr>
+                    <td>le</td>
+                    <td>Less than or equal</td>
+                    <td><code>price le 18</code></td>
+                </tr>
+                <tr>
+                    <td>and</td>
+                    <td>Logical and</td>
+                    <td><code>price ge 18 and price le 30</code></td>
+                </tr>
+                <tr>
+                    <td>or</td>
+                    <td>Logical or</td>
+                    <td><code>price lt 18 or price gt 30</code></td>
+                </tr>
+                <tr>
+                    <td>not</td>
+                    <td>Logical negation</td>
+                    <td><code>not price eq 18</code></td>
+                </tr>
+            </table>
+        </div>
+        <h2>Data types</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Data type</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>String</td>
+                    <td><code>name eq 'hellohq'</code></td>
+                </tr>
+                <tr>
+                    <td>Boolean</td>
+                    <td><code @onclick="">isActive eq true</code></td>
+                </tr>
+                <tr>
+                    <td>Integer</td>
+                    <td><code>price eq 18</code></td>
+                </tr>
+                <tr>
+                    <td>Decimal</td>
+                    <td><code>price eq 18.5</code></td>
+                </tr>
+                <tr>
+                    <td>DateTime</td>
+                    <td><code>createdOn eq datetime'2021-01-01T12:00:00Z'</code></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="v2_order" class="content">
+        <h2>Ordering</h2>
+        <p>
+            In some cases, you want to order the result set of your query. This can be done by using the
+            <code>orderby</code> parameter.<br/>
+            For example, you can order the result set by the UpdatedOn property to get the latest updated items
+            first.<br/>
+            <code>orderby=updatedOn desc</code>
+        </p>
+
+        <p>Here some more examples:</p>
+        <p>
+            The following statement orders by the LastName property of the users in ascending order. If no ascending asc
+            or
+            descending desc order is defined, asc is chosen as a default.
+            <br/>
+            <code>/users?orderby=LastName asc</code>
+        <p>
+            You can also add multiple order statements by listing the properties separated with a , . Keep in mind that
+            we
+            do not allow spaces before or after the , .
+            <br/>
+            The following url filters by LastName ascending first and then by FirstName descending.
+            <br/>
+            <code>/users?orderby=LastName,FirstName desc</code>
+        </p>
+        <p>
+            If you want to order by a nested property, you can do this by separating the Properties by / .
+            <br/>
+            <code>/projects?orderby=ProjectStatus/Type desc</code>
+        </p>
+    </div>
+    <div id="v2_pagination" class="content">
+        <h1>Pagination</h1>
+        <p>When you fetch data from an API, the response of such a request can lead to a huge data set.
+            <br/>
+            This can lead in a slow response time and a high data usage. To avoid this, we implemented a pagination
+            system.
+            <br/>
+            Because of this we set a default limit of 1000 items per page.
+            You can change this limit by adding the <b>top</b> parameter to the URL.
+            But you cannot set a higher limit than 1000 items per page.
+            To get the next page of the result set, you can use the <b>skip</b> parameter. This parameter skips the
+            first n
+            items of the result set.
+        <p>Example: <code>/v2/Companies?top=1000&skip=1000</code></p>
+        To make the pagination more comfortable, we added two header to the response.
+        </p>
+        <ul>
+            <li><code>helloHQ-Count</code>: The total number of items in the collection.</li>
+            <li><code>helloHQ-NextLink</code>: The next url you need to call for the next batch. This header is empty
+                when
+                no more data are available anymore.
+            </li>
+        </ul>
+    </div>
+    <div id="v2_rate" class="content">
+        <h2>Rate Limit</h2>
+        <p>
+            The number of request to the API are limted by a rate limit mechanism.
+            <br/>
+            The rate limit is set to <b>1000 requests per minute</b>.
+        <p>
+            The API responds with a <code> 429 Too Many Requests </code> status code when the rate limit is exceeded.
+        </p>
+        <p>
+            We recommend developers of client applications to read these header values and use a back-off time to fail
+            gracefully and wait for the limit to reset to continue making requests.
+        </p>
+    </div>
+    <div id="v2_endpoints" class="content">
+        <h2>Endpoints</h2>
+    </div>
+    
+    <div class="_footer">
+        <a href="https://www.hellohq.io/en/imprint" target="_blank">Imprint</a> &
+        <a href="https://www.hellohq.io/en/privacy-policy" target="_blank">Privacy Policy</a>
+    </div>
+</div>
+
+
+<script>
+    
+
+    window.onload = function () {
+        Prism.languages.http = Prism.languages.extend('http', {
+            'method': {
+                pattern: /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD)\b/gm,
+                alias: 'keyword'
+            }
+        });
+        
+        // Begin Swagger UI call region
+        const ui = SwaggerUIBundle({
+            url: "swagger19.json", //Location of Open API spec in the repo
+            dom_id: '#v1_endpoints',
+            defaultModelsExpandDepth: -1,
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ]
+        })
+
+        // Begin Swagger UI call region
+        const ui2 = SwaggerUIBundle({
+            url: "swagger20.json", //Location of Open API spec in the repo
+            dom_id: '#v2_endpoints',
+            defaultModelsExpandDepth: -1,
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ]
+        })
+
+        // window.ui = ui
+    }
+
+    function copyToClipboard(container) {
+        // Find the nearest <code> block related to the clicked button
+        var codeBlock = container.querySelector('code').innerText;
+
+        navigator.clipboard.writeText(codeBlock);
+    }
+    
+    function scrollToHeadline(id, event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        const headline = document.getElementById(id);
+        if (headline) {
+            const rect = headline.getBoundingClientRect();
+            const contentWrapper = document.querySelector('#content-wrapper');
+            const contentWrapperOffset = contentWrapper.offsetTop;
+
+            const scrollPosition = rect.top + contentWrapper.scrollTop - contentWrapperOffset;
+
+            contentWrapper.scrollTo({
+                top: scrollPosition,
+                behavior: 'smooth'
+            });
+        } else {
+            console.log("Headline not found for ID:", id);
+        }
+    }
+
+    function showContent(id, parentContentId) {
+        var contents = document.querySelectorAll('.content');
+        // contents.forEach(function (content) {
+        //     content.style.display = 'none';
+        // });
+        document.getElementById(id).style.display = 'block';
+
+        const links = document.querySelectorAll('.navbar a');
+        links.forEach(link => {
+            link.classList.remove('active');
+        });
+        document.getElementById(parentContentId).classList.add('active');
+
+        // document.getElementById("default-content").style.display = 'none';
+    }
+
+</script>
+</body>
+</html>
