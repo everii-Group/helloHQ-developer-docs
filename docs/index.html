@@ -60,7 +60,7 @@
 </div>
 </li>
 <li>
-<a href="https://github.com/hellohq-io/hellohq.docs/issues" target="_blank">Community</a>
+<a href="https://github.com/everii-Group/helloHQ-developer-docs/issues" target="_blank">Community</a>
 </li>
 </ul>
 </div>
@@ -449,11 +449,17 @@
 <div class="content" id="v2_filter">
     <h1>Filtering</h1>
     <p>The helloHQ API supports a wide range of filters that can be applied across all our API controllers.</p>
-    <p>One important note: Please ensure that you encode the URLs you use:</p>
+
+    <h2>General information</h2>
+    <p>Please ensure that you encode the URLs you use:</p>
     <div class="code-container">
         <pre class="language-http"><code>filter=name eq 'hello %26 hq' &lt;- correct
 filter=name eq 'hello &amp; hq'   &lt;- incorrect</code></pre>
     </div>
+    <p>
+        We use dates without time and with time. All date properties are with time an in UTC when the property end with On, for example StartOn.
+        When the property ends with Date, it is a date in user time and the time component is usually 00:00:00.000.
+    </p>
 
     <h2>Operator</h2>
     <p>We offer a variety of operations to filter your data precisely according to your needs.</p>

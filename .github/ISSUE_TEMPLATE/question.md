@@ -2,8 +2,7 @@
 name: Question
 about: Your questions about our API
 title: ''
-labels: ''
-assignees: ''
+api-version: 'v1 or v2'
 
 ---
 
