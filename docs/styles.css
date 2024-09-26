@@ -397,3 +397,11 @@ code {
   background: var(--gray-2);
   border: 1px solid var(--gray-4);
 }
+
+/* swagger sytling */
+
+/* Overerwride header and remove shadows, boarders and replace background */
+.swagger-ui .scheme-container {
+  background: var(--gray-2);
+  margin: 0 0 20px;
+}
