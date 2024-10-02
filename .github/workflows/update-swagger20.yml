@@ -1,0 +1,25 @@
+name: Download Swagger JSON
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-swagger-json:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download Swagger JSON
+      run: curl -o docs/swagger20.json https://beta.hellohq.io/swagger/v2/swagger.json
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add docs/swagger20.json
+        git commit -m 'Add downloaded swagger20.json'
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
