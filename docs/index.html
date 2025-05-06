@@ -50,13 +50,14 @@
 <li class="dropdown">
 <a href="javascript:void(0)" id="api_v2">API v2</a>
 <div class="dropdown-content">
-<a href="#content1" onclick="scrollToHeadline('v2_auth')">Authentication</a>
-<a href="#content5" onclick="scrollToHeadline('v2_permissions')">Permissions</a>
-<a href="#content2" onclick="scrollToHeadline('v2_filter')">Filtering</a>
-<a href="#content3" onclick="scrollToHeadline('v2_order')">Ordering</a>
-<a href="#content4" onclick="scrollToHeadline('v2_pagination')">Pagination</a>
-<a href="#content6" onclick="scrollToHeadline('v2_rate')">Rate Limits</a>
-<a href="#content6" onclick="scrollToHeadline('v2_endpoints')">Endpoints</a>
+<a href="#" onclick="scrollToHeadline('v2_auth')">Authentication</a>
+<a href="#" onclick="scrollToHeadline('v2_permissions')">Permissions</a>
+<a href="#" onclick="scrollToHeadline('v2_expand')">Expand</a>
+<a href="#" onclick="scrollToHeadline('v2_filter')">Filtering</a>
+<a href="#" onclick="scrollToHeadline('v2_order')">Ordering</a>
+<a href="#" onclick="scrollToHeadline('v2_pagination')">Pagination</a>
+<a href="#" onclick="scrollToHeadline('v2_rate')">Rate Limits</a>
+<a href="#" onclick="scrollToHeadline('v2_endpoints')">Endpoints</a>
 </div>
 </li>
 <li>
@@ -447,6 +448,23 @@
     <h3>User Token</h3>
     <p>The user token provides access to the API within a user context. In this case, the token includes information about the user.<br>
     With this token, you will only retrieve data that the user has access to. Additionally, when data is created, it will be created in the subsystem to which the user belongs. This is particularly relevant if you are using subsystems in helloHQ.</p>
+</div>
+
+<div class="content" id="v2_expand">
+    <h1 id="expand">Expand</h1>
+    <p>Using the expand feature allows you to retrieve additional data in a single query. It enables you to access related entities and navigation properties associated with an entity.</p>
+    <p>To use this feature, include the <code>$expand=</code> parameter in your URL.</p>
+    <p>Here are some examples demonstrating how to utilize the <code>$expand</code> option.</p>
+    <h2 id="expand-one-property">Expand one property</h2>
+    <ul>
+    <li>To expand the default address for a company:</li>
+    </ul>
+    <pre><code><span class="hljs-regexp">/v2/</span>Projects?<span class="hljs-variable">?expand</span>=ProjectMembers</code></pre>
+    <h2 id="expand-multiple-properties">Expand multiple properties</h2>
+    <ul>
+    <li>To expand both the default address and the company types for a company:</li>
+    </ul>
+    <pre><code><span class="hljs-regexp">/v2/</span>Documents?<span class="hljs-variable">?expand</span>=Positions,Attachments</code></pre>
 </div>
     
 <div class="content" id="v2_filter">
