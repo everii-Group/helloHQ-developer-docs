@@ -11,7 +11,7 @@
           "Absences"
         ],
         "summary": "Creates a new absence.",
-        "description": "You can create an absence by providing the absence details in the request body.\n\n<b>Additional Information:</b>\n\r\n- Start and end dates are required, but their usage depends on the type of absence.\n\r\n- For hour-based absences such as <i>CompanyAbsence</i> and <i>PrivateAbsence</i>, specify UTC-based times for both start and end dates.\n\r\nExample: <i>\"2023-11-14T06:00:00Z\"</i>\n\n\r\n- For all other absences (day or half-day based), set the start and end dates like so:\n\r\n  - Full day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T00:00:00\"</i>\n\r\n  - Half-day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T12:00:00\"</i>",
+        "description": "You can create an absence by providing the absence details in the request body.\n\n<b>Additional Information:</b>\n\r\n- Start and end dates are required, but their usage depends on the type of absence.\n\r\n- For hour-based absences such as <i>CompanyAbsence</i> and <i>PrivateAbsence</i>, specify UTC-based times for both start and end dates.\n\r\n  Example: <i>\"2023-11-14T06:00:00Z\"</i>\n\n\r\n- For all other absences (day or half-day based), set the start and end dates like so:\n\r\n- Full day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T00:00:00\"</i>\n\r\n- Half-day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T12:00:00\"</i>\n\n<b>Supported Full Day and Half Day Absence Types:</b>\n\r\n- Vacation\n\r\n- SpecialLeave\n\r\n- VacationUnpaid\n\r\n- OvertimeCompensation\n\r\n- RemoteWork\n\r\n- ChildSick\n\r\n- SickLeave",
         "requestBody": {
           "description": "The absence details to be created.",
           "content": {
@@ -211,6 +211,39 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v2/Integrations/awork": {
+      "post": {
+        "tags": [
+          "AworkIntegrations"
+        ],
+        "summary": "Triggers from awork to apply changes in the helloHQ system",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AworkWebhook"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AworkWebhook"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AworkWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2600,7 +2633,7 @@
           "Documents"
         ],
         "summary": "Creates a new document.",
-        "description": "To create a document, provide the document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number.\r\n</p></p>",
+        "description": "To create a document, provide the document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number. \n\n</p></p>",
         "requestBody": {
           "description": "Data for the new document.",
           "content": {
@@ -2700,7 +2733,7 @@
           "Documents"
         ],
         "summary": "Updates an existing document.",
-        "description": "To update a document, provide the document ID in the URL and the updated document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number.\r\n</p></p>",
+        "description": "To update a document, provide the document ID in the URL and the updated document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number.\n\n\r\n            \r\nThe properties `companyId`, `contactPersonId` are obsolete and will be removed in the future.\r\nPlease use the `SetCompanyData` endpoint instead.\r\n</p></p>",
         "parameters": [
           {
             "name": "id",
@@ -2983,6 +3016,52 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v2/Documents/{id}/SetCompanyData": {
+      "post": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Updates the company data of an existing document.",
+        "description": "This endpoint updates company data, including address generation.\n\n<b>Additional Information:</b>\n\r\nTo update the document and generate a new address, only the `companyId` property needs to be set.\r\nThe address will be generated based on the document type and the company information.\n\r\nIf you want to use a specific address or contact person, you can set the `companyAddressId` and `companyContactPersonId` properties.\n\r\nTo remove the project from the document and its positions, set `resetProject` to `true`.\n\r\nIf you set a `projectId` to assign a new project, the `resetProject` property will be ignored.\n\r\nIf you want to use your own address text, set the `addressText` property. This will overwrite the generated address text.\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the existing document.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The new company data.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyData"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -4169,6 +4248,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -4283,6 +4370,14 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -4450,7 +4545,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "<b>examples: </b><br>Parent<br>Parent,Project<br>ResourceToTasks,UserWorkingTimes<br>Comments,Integrations",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
             "schema": {
               "type": "string"
             }
@@ -4528,7 +4623,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "<b>examples: </b><br>Parent<br>Parent,Project<br>ResourceToTasks,UserWorkingTimes<br>Comments,Integrations",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
             "schema": {
               "type": "string"
             }
@@ -6659,7 +6754,7 @@
             "type": "integer",
             "description": "The Id of the user who's absence this is",
             "format": "int32",
-            "example": "94295"
+            "example": "69119"
           },
           "start": {
             "type": "string",
@@ -6695,7 +6790,7 @@
             "type": "integer",
             "description": "The Id of the user who's absence this is",
             "format": "int32",
-            "example": "77212"
+            "example": "32830"
           },
           "id": {
             "type": "integer",
@@ -6766,6 +6861,41 @@
           "Weeks"
         ],
         "type": "string"
+      },
+      "AworkWebhook": {
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "entity": {
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventType": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "triggeredBy": {
+            "nullable": true
+          },
+          "changes": {
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "BillingType": {
         "enum": [
@@ -6901,7 +7031,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "38338"
+            "example": "49557"
           },
           "plainMessage": {
             "type": "string",
@@ -6962,7 +7092,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "31672"
+            "example": "46241"
           }
         },
         "additionalProperties": false
@@ -7172,6 +7302,53 @@
           "updatedBy": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompanyData": {
+        "required": [
+          "companyId"
+        ],
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company.",
+            "format": "int32",
+            "example": "2211"
+          },
+          "companyAddressId": {
+            "type": "integer",
+            "description": "The ID of the company address.\r\nIf null, the default address of the document type will be used.",
+            "format": "int32",
+            "nullable": true,
+            "example": "22"
+          },
+          "companyContactPersonId": {
+            "type": "integer",
+            "description": "The ID of the company contact person.",
+            "format": "int32",
+            "nullable": true,
+            "example": "3"
+          },
+          "addressText": {
+            "type": "string",
+            "description": "This will overwrite the generated address text.\r\nLeave empty to use the default address text.",
+            "nullable": true,
+            "example": "Everii Germany GmbH\nColonnaden 41\n20354 Hamburg\nDeutschland\n"
+          },
+          "resetProject": {
+            "type": "boolean",
+            "description": "Set to true to delete the project ID from the document and positions.\r\nOnly used if the ProjectId isn't set.",
+            "example": "True"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "Set the project to the document and positions.",
+            "format": "int32",
+            "nullable": true,
+            "example": "300"
           }
         },
         "additionalProperties": false
@@ -7985,7 +8162,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "23436"
+            "example": "81068"
           }
         },
         "additionalProperties": false,
@@ -8829,18 +9006,6 @@
             "nullable": true,
             "example": null
           },
-          "contactPersonId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
-          "companyId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
             "format": "int32",
@@ -8873,7 +9038,7 @@
           },
           "id": {
             "type": "integer",
-            "description": "The id of the company",
+            "description": "The id of the document",
             "format": "int32"
           },
           "createdOn": {
@@ -8904,6 +9069,20 @@
             "description": "The formatted address text of the document.",
             "nullable": true,
             "example": "everii Germany GmbH Colonnaden 41 20354 Hamburg "
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The ID of the company contact person.",
+            "format": "int32",
+            "nullable": true,
+            "example": "12"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company.",
+            "format": "int32",
+            "nullable": true,
+            "example": "223"
           },
           "sentOn": {
             "type": "string",
@@ -9079,18 +9258,6 @@
             "nullable": true,
             "example": null
           },
-          "contactPersonId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
-          "companyId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
             "format": "int32",
@@ -9123,7 +9290,7 @@
           },
           "id": {
             "type": "integer",
-            "description": "The id of the company",
+            "description": "The id of the document",
             "format": "int32"
           },
           "createdOn": {
@@ -9154,6 +9321,20 @@
             "description": "The formatted address text of the document.",
             "nullable": true,
             "example": "everii Germany GmbH Colonnaden 41 20354 Hamburg "
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The ID of the company contact person.",
+            "format": "int32",
+            "nullable": true,
+            "example": "12"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company.",
+            "format": "int32",
+            "nullable": true,
+            "example": "223"
           },
           "sentOn": {
             "type": "string",
@@ -10488,6 +10669,11 @@
             "nullable": true,
             "example": "66666"
           },
+          "isOptional": {
+            "type": "boolean",
+            "description": "Indicates whether the position is optional. This field only applies to Quotations and Confirmations.\r\nFor all other document types, this field will always be false.",
+            "example": "False"
+          },
           "customFields": {
             "type": "array",
             "items": {
@@ -10584,7 +10770,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "74848"
+            "example": "55147"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -10625,7 +10811,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "11255"
+            "example": "56723"
           },
           "number": {
             "type": "string",
@@ -10702,18 +10888,6 @@
             "nullable": true,
             "example": null
           },
-          "contactPersonId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
-          "companyId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
             "format": "int32",
@@ -10749,6 +10923,20 @@
             "description": "The number of the document.\r\nOnly allowed to set for documents of type Incoming Invoice.",
             "nullable": true,
             "example": "ER-1234"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "example": null,
+            "deprecated": true
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "example": null,
+            "deprecated": true
           }
         },
         "additionalProperties": false
@@ -11442,6 +11630,11 @@
             "description": "Gets or sets the id of related Table in Document.",
             "format": "uuid",
             "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "isOptional": {
+            "type": "boolean",
+            "description": "Indicates whether the position is optional. This field only applies to Quotations and Confirmations.\r\nFor all other document types, this field will always be false.",
+            "example": "False"
           },
           "customFields": {
             "type": "array",
@@ -12170,7 +12363,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "45825"
+            "example": "41768"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -12295,7 +12488,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "12611"
+            "example": "18238"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -12570,7 +12763,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "83162"
+            "example": "54410"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -12583,13 +12776,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "23264"
+            "example": "79325"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "21093"
+            "example": "68293"
           },
           "projectMembers": {
             "type": "array",
@@ -12648,7 +12841,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "32103"
+            "example": "25511"
           },
           "internalContactPersonId": {
             "type": "integer",
