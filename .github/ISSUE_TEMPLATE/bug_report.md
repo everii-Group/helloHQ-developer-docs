@@ -14,6 +14,7 @@ A clear and concise description of what the bug is.
 Steps to reproduce the behavior:
 1. Add request as Curl
 2. Add response
+3. Add your helloHQ Domain
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
