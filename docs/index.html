@@ -457,18 +457,18 @@
 <div class="content" id="v2_expand">
     <h1 id="expand">Expand</h1>
     <p>Using the expand feature allows you to retrieve additional data in a single query. It enables you to access related entities and navigation properties associated with an entity.</p>
-    <p>To use this feature, include the <code>$expand=</code> parameter in your URL.</p>
-    <p>Here are some examples demonstrating how to utilize the <code>$expand</code> option.</p>
+    <p>To use this feature, include the <code>expand</code> parameter in your URL.</p>
+    <p>Here are some examples demonstrating how to utilize the <code>expand</code> option.</p>
     <h2 id="expand-one-property">Expand one property</h2>
     <ul>
     <li>To expand the default address for a company:</li>
     </ul>
-    <pre><code><span class="hljs-regexp">/v2/</span>Projects?<span class="hljs-variable">?expand</span>=ProjectMembers</code></pre>
+    <pre><code><span class="hljs-regexp">/v2/</span>Projects<span class="hljs-variable">?expand</span>=ProjectMembers</code></pre>
     <h2 id="expand-multiple-properties">Expand multiple properties</h2>
     <ul>
     <li>To expand both the default address and the company types for a company:</li>
     </ul>
-    <pre><code><span class="hljs-regexp">/v2/</span>Documents?<span class="hljs-variable">?expand</span>=Positions,Attachments</code></pre>
+    <pre><code><span class="hljs-regexp">/v2/</span>Documents<span class="hljs-variable">?expand</span>=Positions,Attachments</code></pre>
 </div>
     
 <div class="content" id="v2_filter">
@@ -499,7 +499,7 @@ filter=name eq 'hello &amp; hq'   &lt;- incorrect</code></pre>
         <td>eq</td>
         <td>Equal</td>
         <td>
-        <code>filter=name eq 'hellohq'</code>
+        <code>name eq 'hellohq'</code>
         </td>
         </tr>
         <tr>
