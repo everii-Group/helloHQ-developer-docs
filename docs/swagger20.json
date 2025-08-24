@@ -1342,6 +1342,214 @@
         }
       }
     },
+    "/v2/ContactHistories": {
+      "post": {
+        "tags": [
+          "ContactHistories"
+        ],
+        "summary": "Creates a new contact history for the entites with the related id's (Company, Lead, Project).",
+        "description": "You can create a contact person history by providing the ContactHistoryPost-Model in the request body.",
+        "requestBody": {
+          "description": "ContactHistoryPost-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "ContactHistories"
+        ],
+        "summary": "Retrieves all entities that have not been deleted.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company, Lead, Project, User, ContactPerson<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactHistoryGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/ContactHistories/{id}": {
+      "put": {
+        "tags": [
+          "ContactHistories"
+        ],
+        "summary": "Updates the contact person history associated with the given Id.",
+        "description": "You can update a contact person history by providing the Id in the URL and the ContactHistoryPut-Model in the body",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the contact person history",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "ContactHistoryPut-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactHistoryPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ContactHistories"
+        ],
+        "summary": "Deletes the contact history associated with the specified id.\r\nWhen channel of contact history is \"Task\" the associated tasks will be deleted as well.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the contact history to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "ContactHistories"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company, Lead, Project, User, ContactPerson<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactHistoryGetRelated"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/ContactPersons": {
       "post": {
         "tags": [
@@ -1376,6 +1584,7 @@
               "application/json": {
                 "example": {
                   "defaultAddress": "hellohq.api.Models.CompanyAddressBase",
+                  "company": "hellohq.api.Models.Company.CompanyGet",
                   "customFields": "HQ.SQL.Model.CustomFieldContent",
                   "customFieldContent": "System.Collections.Generic.List`1[hellohq.api.Controllers.CustomField.Model.CustomFieldGet]",
                   "customFieldCategory": 0,
@@ -1384,7 +1593,8 @@
                   "createdBy": 0,
                   "updatedOn": "System.DateTime",
                   "updatedBy": 0,
-                  "defaultAddressId": 0,
+                  "defaultAddressId": "22",
+                  "companyId": "4099",
                   "firstName": "Max",
                   "lastName": "Mustermann",
                   "position": "Manager",
@@ -1439,6 +1649,14 @@
             "name": "orderby",
             "in": "query",
             "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company<br>",
             "schema": {
               "type": "string"
             }
@@ -1507,6 +1725,7 @@
               "application/json": {
                 "example": {
                   "defaultAddress": "hellohq.api.Models.CompanyAddressBase",
+                  "company": "hellohq.api.Models.Company.CompanyGet",
                   "customFields": "HQ.SQL.Model.CustomFieldContent",
                   "customFieldContent": "System.Collections.Generic.List`1[hellohq.api.Controllers.CustomField.Model.CustomFieldGet]",
                   "customFieldCategory": 0,
@@ -1515,7 +1734,8 @@
                   "createdBy": 0,
                   "updatedOn": "System.DateTime",
                   "updatedBy": 0,
-                  "defaultAddressId": 0,
+                  "defaultAddressId": "22",
+                  "companyId": "4099",
                   "firstName": "Max",
                   "lastName": "Mustermann",
                   "position": "Manager",
@@ -1571,6 +1791,14 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company<br>",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -3986,6 +4214,11 @@
                     "description": "The document the file is related to",
                     "format": "int32"
                   },
+                  "ContactPersonHistoryId": {
+                    "type": "integer",
+                    "description": "The contact history the file is related to",
+                    "format": "int32"
+                  },
                   "Name": {
                     "type": "string",
                     "description": "The name of the file\r\nIMPORTANT: This is a generated field based on the Path and the Ending properties. You can not filter this property in the query string!\r\nUse Path and/or Ending instead."
@@ -4013,6 +4246,9 @@
                   "style": "form"
                 },
                 "DocumentId": {
+                  "style": "form"
+                },
+                "ContactPersonHistoryId": {
                   "style": "form"
                 },
                 "Name": {
@@ -4693,7 +4929,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
             "schema": {
               "type": "string"
             }
@@ -4816,7 +5052,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
             "schema": {
               "type": "string"
             }
@@ -4941,6 +5177,310 @@
         }
       }
     },
+    "/v2/Projects/ProjectMembers": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieves all project members associated with any project.",
+        "description": "Only project members that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-00T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMemberGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Projects/{projectId}/ProjectMembers": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieves all project members associated with a specified project.",
+        "description": "Only project members that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "The ID of the project to retrieve project members for.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-00T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMemberGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Adds a new project member to the specified project.",
+        "description": "To add a project member, provide the project ID in the URL and the ProjectMemberPost model in the request body.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "The ID of the project to which the project member will be added.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The ProjectMemberPost model with details of the project member to create.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMemberGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Projects/{projectId}/ProjectMembers/{id}": {
+      "put": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Updates the project member with the given ID.",
+        "description": "To update a project member, provide the project ID and project member ID in the URL, and the updated project member data in the request body.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "The ID of the associated project.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the project member to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "ProjectMemberPut-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectMemberPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "currency": "EUR",
+                  "externalChargeRateValue": "120.00",
+                  "projectId": 0,
+                  "userId": 0,
+                  "externalChargeRateId": 0,
+                  "projectRoleId": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Deletes the project member with the given ID.",
+        "description": "To delete a project member, provide the project ID and the ID of the project member in the URL.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "The ID of the associated project.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the project member to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
     "/v2/Projects/Tasks": {
       "get": {
         "tags": [
@@ -4986,7 +5526,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
             "schema": {
               "type": "string"
             }
@@ -5064,7 +5604,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
             "schema": {
               "type": "string"
             }
@@ -7473,9 +8013,9 @@
           },
           "userId": {
             "type": "integer",
-            "description": "The Id of the user who's absence this is",
+            "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "25873"
+            "example": "69897"
           },
           "start": {
             "type": "string",
@@ -7509,9 +8049,9 @@
           },
           "userId": {
             "type": "integer",
-            "description": "The Id of the user who's absence this is",
+            "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "80047"
+            "example": "94353"
           },
           "id": {
             "type": "integer",
@@ -7752,7 +8292,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "56598"
+            "example": "51627"
           },
           "plainMessage": {
             "type": "string",
@@ -7813,7 +8353,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "78604"
+            "example": "66505"
           }
         },
         "additionalProperties": false
@@ -8969,11 +9509,426 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "29108"
+            "example": "45385"
           }
         },
         "additionalProperties": false,
         "description": "Abstract Base Class for all CompanyType-Models."
+      },
+      "ContactHistoryChannel": {
+        "enum": [
+          "Note",
+          "Mail",
+          "Call",
+          "Meeting",
+          "Visit",
+          "Task",
+          "SentDocument"
+        ],
+        "type": "string"
+      },
+      "ContactHistoryGetRelated": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "The reason for the contact history.",
+            "nullable": true,
+            "example": "Reason of the contact history"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the contact history.",
+            "nullable": true,
+            "example": "Content of the contact history"
+          },
+          "contactOn": {
+            "type": "string",
+            "description": "When the contact was made.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "nextContactDate": {
+            "type": "string",
+            "description": "When the next contact should be made.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryChannel": {
+            "$ref": "#/components/schemas/ContactHistoryChannel"
+          },
+          "isReminder": {
+            "type": "boolean",
+            "description": "True if the contact history is a reminder, false otherwise.",
+            "nullable": true,
+            "example": "True"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The id of the contact person associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The id of the user associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The sync id of the contact history.",
+            "nullable": true,
+            "example": "99999"
+          },
+          "lastSyncOn": {
+            "type": "string",
+            "description": "When the contact history was last synced.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryStatus": {
+            "$ref": "#/components/schemas/ContactHistoryStatus"
+          },
+          "recipientEmailAddress": {
+            "type": "string",
+            "description": "A comma separated list of the recipient email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "ccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of cc email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "bccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of bcc email addresses for contact history of type Mail.",
+            "nullable": true
+          },
+          "responsibleUserIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "A list of user ids that are responsible for a contact history of type Task.",
+            "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "description": "The id of the contact history.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the contact history was created in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user id of the user who created the contact history.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the contact history was last updated in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user id of the user who last updated the contact history.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "The id of the lead associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The id of the project associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The id of the company associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "contactPerson": {
+            "$ref": "#/components/schemas/ContactPersonGet"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserGet"
+          },
+          "lead": {
+            "$ref": "#/components/schemas/LeadGet"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectGet"
+          },
+          "company": {
+            "$ref": "#/components/schemas/CompanyGet"
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldGet"
+            },
+            "description": "The custom fiels of the contact person",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Get related model for Contact History."
+      },
+      "ContactHistoryPost": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "The reason for the contact history.",
+            "nullable": true,
+            "example": "Reason of the contact history"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the contact history.",
+            "nullable": true,
+            "example": "Content of the contact history"
+          },
+          "contactOn": {
+            "type": "string",
+            "description": "When the contact was made.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "nextContactDate": {
+            "type": "string",
+            "description": "When the next contact should be made.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryChannel": {
+            "$ref": "#/components/schemas/ContactHistoryChannel"
+          },
+          "isReminder": {
+            "type": "boolean",
+            "description": "True if the contact history is a reminder, false otherwise.",
+            "nullable": true,
+            "example": "True"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The id of the contact person associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The id of the user associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The sync id of the contact history.",
+            "nullable": true,
+            "example": "99999"
+          },
+          "lastSyncOn": {
+            "type": "string",
+            "description": "When the contact history was last synced.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryStatus": {
+            "$ref": "#/components/schemas/ContactHistoryStatus"
+          },
+          "recipientEmailAddress": {
+            "type": "string",
+            "description": "A comma separated list of the recipient email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "ccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of cc email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "bccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of bcc email addresses for contact history of type Mail.",
+            "nullable": true
+          },
+          "responsibleUserIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "A list of user ids that are responsible for a contact history of type Task.",
+            "nullable": true
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "The id of the lead associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The id of the project associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The id of the company associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldContentBase"
+            },
+            "description": "The custom fields associated with the contact history.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Post model for Contact History."
+      },
+      "ContactHistoryPut": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "The reason for the contact history.",
+            "nullable": true,
+            "example": "Reason of the contact history"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the contact history.",
+            "nullable": true,
+            "example": "Content of the contact history"
+          },
+          "contactOn": {
+            "type": "string",
+            "description": "When the contact was made.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "nextContactDate": {
+            "type": "string",
+            "description": "When the next contact should be made.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryChannel": {
+            "$ref": "#/components/schemas/ContactHistoryChannel"
+          },
+          "isReminder": {
+            "type": "boolean",
+            "description": "True if the contact history is a reminder, false otherwise.",
+            "nullable": true,
+            "example": "True"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The id of the contact person associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The id of the user associated with the contact history.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The sync id of the contact history.",
+            "nullable": true,
+            "example": "99999"
+          },
+          "lastSyncOn": {
+            "type": "string",
+            "description": "When the contact history was last synced.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "contactHistoryStatus": {
+            "$ref": "#/components/schemas/ContactHistoryStatus"
+          },
+          "recipientEmailAddress": {
+            "type": "string",
+            "description": "A comma separated list of the recipient email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "ccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of cc email addresses for a contact history of type Mail.",
+            "nullable": true
+          },
+          "bccEmailAddresses": {
+            "type": "string",
+            "description": "A comma separated list of bcc email addresses for contact history of type Mail.",
+            "nullable": true
+          },
+          "responsibleUserIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "A list of user ids that are responsible for a contact history of type Task.",
+            "nullable": true
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldContentBase"
+            },
+            "description": "The custom fields associated with the contact history.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Put model for Contact History."
+      },
+      "ContactHistoryStatus": {
+        "enum": [
+          "Reached",
+          "NotReached"
+        ],
+        "type": "string"
       },
       "ContactPersonGet": {
         "type": "object",
@@ -9069,7 +10024,15 @@
           "defaultAddressId": {
             "type": "integer",
             "description": "Default address of the company",
-            "format": "int32"
+            "format": "int32",
+            "example": "22"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The id of the company this contact person belongs to.",
+            "format": "int32",
+            "nullable": true,
+            "example": "4099"
           }
         },
         "additionalProperties": false
@@ -9168,10 +10131,21 @@
           "defaultAddressId": {
             "type": "integer",
             "description": "Default address of the company",
-            "format": "int32"
+            "format": "int32",
+            "example": "22"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The id of the company this contact person belongs to.",
+            "format": "int32",
+            "nullable": true,
+            "example": "4099"
           },
           "defaultAddress": {
             "$ref": "#/components/schemas/CompanyAddressBase"
+          },
+          "company": {
+            "$ref": "#/components/schemas/CompanyGet"
           },
           "customFields": {
             "type": "array",
@@ -11731,7 +12705,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "12115"
+            "example": "97695"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -11772,7 +12746,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "42009"
+            "example": "78698"
           },
           "number": {
             "type": "string",
@@ -12269,6 +13243,80 @@
           "UserReporting"
         ],
         "type": "string"
+      },
+      "FinancesChargeRateGet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the finances chart rate.",
+            "nullable": true,
+            "example": "Standard"
+          },
+          "description": {
+            "type": "string",
+            "description": "The name of the finances chart rate.",
+            "nullable": true,
+            "example": "Your description"
+          },
+          "chargeRate": {
+            "type": "number",
+            "description": "The charge rate value of the finances chart rate..",
+            "format": "double",
+            "nullable": true
+          },
+          "internalCostRate": {
+            "type": "number",
+            "description": "The internal cost rate of the finances chart rate.",
+            "format": "double",
+            "nullable": true
+          },
+          "currencyChargeRate": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The Currency of ChargeRatey.",
+            "nullable": true
+          },
+          "currencyInternalCostRate": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The Currency of InternalCostRate.",
+            "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "description": "The id of the project role.",
+            "format": "int32",
+            "example": "12"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the project role was created in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user id of the user who created the project role.",
+            "format": "int32",
+            "example": "4"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the project role was last updated in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user id of the user who last updated the project role.",
+            "format": "int32",
+            "example": "4"
+          }
+        },
+        "additionalProperties": false
       },
       "FinancesCostCenterGet": {
         "type": "object",
@@ -13342,7 +14390,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "28528"
+            "example": "90652"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -13467,7 +14515,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "57492"
+            "example": "62777"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -13608,75 +14656,32 @@
       "ProjectMemberBase": {
         "type": "object",
         "properties": {
-          "userId": {
+          "externalChargeRateId": {
             "type": "integer",
-            "description": "The ID of the user who added as member.",
+            "description": "The ID of the charge rate of the user in the project.",
             "format": "int32"
           },
           "projectRoleId": {
             "type": "integer",
-            "description": "The ID of the role of the user in the project.",
+            "description": "The ID of the project role of the project member.",
             "format": "int32"
-          },
-          "currency": {
-            "maxLength": 3,
-            "minLength": 0,
-            "type": "string",
-            "description": "The currency of the rate.\r\nUse ISO 4217 format, for example EUR, USD, GBP.",
-            "nullable": true,
-            "example": "EUR"
-          },
-          "externalChargeRateId": {
-            "type": "integer",
-            "description": "The ID of the charge rate of the user in the project.",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
-          "externalChargeRateValue": {
-            "type": "number",
-            "description": "The monetary value of the charge rate of the user in the project.",
-            "format": "double",
-            "nullable": true,
-            "example": "120.00"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "This is the abstract base class for project members."
       },
       "ProjectMemberGet": {
         "type": "object",
         "properties": {
-          "userId": {
+          "externalChargeRateId": {
             "type": "integer",
-            "description": "The ID of the user who added as member.",
+            "description": "The ID of the charge rate of the user in the project.",
             "format": "int32"
           },
           "projectRoleId": {
             "type": "integer",
-            "description": "The ID of the role of the user in the project.",
+            "description": "The ID of the project role of the project member.",
             "format": "int32"
-          },
-          "currency": {
-            "maxLength": 3,
-            "minLength": 0,
-            "type": "string",
-            "description": "The currency of the rate.\r\nUse ISO 4217 format, for example EUR, USD, GBP.",
-            "nullable": true,
-            "example": "EUR"
-          },
-          "externalChargeRateId": {
-            "type": "integer",
-            "description": "The ID of the charge rate of the user in the project.",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          },
-          "externalChargeRateValue": {
-            "type": "number",
-            "description": "The monetary value of the charge rate of the user in the project.",
-            "format": "double",
-            "nullable": true,
-            "example": "120.00"
           },
           "id": {
             "type": "integer",
@@ -13707,6 +14712,165 @@
             "description": "The user ID of the user who last updated the project member.",
             "format": "int32",
             "example": "4"
+          },
+          "currency": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The currency of the rate.\r\nUse ISO 4217 format, for example EUR, USD, GBP.",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "externalChargeRateValue": {
+            "type": "number",
+            "description": "The monetary value of the charge rate of the user in the project.",
+            "format": "double",
+            "nullable": true,
+            "example": "120.00"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The ID of the Projct for project member.",
+            "format": "int32",
+            "nullable": true,
+            "example": null
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The ID of the user for project member.",
+            "format": "int32",
+            "nullable": true,
+            "example": null
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectMemberGetRelated": {
+        "type": "object",
+        "properties": {
+          "externalChargeRateId": {
+            "type": "integer",
+            "description": "The ID of the charge rate of the user in the project.",
+            "format": "int32"
+          },
+          "projectRoleId": {
+            "type": "integer",
+            "description": "The ID of the project role of the project member.",
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "description": "The ID of the project to member relation.",
+            "format": "int32",
+            "example": "3543"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the project member was created in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user ID of the user who created the project member.",
+            "format": "int32",
+            "example": "4"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the project member was last updated in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user ID of the user who last updated the project member.",
+            "format": "int32",
+            "example": "4"
+          },
+          "currency": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The currency of the rate.\r\nUse ISO 4217 format, for example EUR, USD, GBP.",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "externalChargeRateValue": {
+            "type": "number",
+            "description": "The monetary value of the charge rate of the user in the project.",
+            "format": "double",
+            "nullable": true,
+            "example": "120.00"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The ID of the Projct for project member.",
+            "format": "int32",
+            "nullable": true,
+            "example": null
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The ID of the user for project member.",
+            "format": "int32",
+            "nullable": true,
+            "example": null
+          },
+          "externalChargeRate": {
+            "$ref": "#/components/schemas/FinancesChargeRateGet"
+          },
+          "projectRole": {
+            "$ref": "#/components/schemas/ProjectRoleGet"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserGet"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectGet"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectMemberPost": {
+        "type": "object",
+        "properties": {
+          "externalChargeRateId": {
+            "type": "integer",
+            "description": "The ID of the charge rate of the user in the project.",
+            "format": "int32"
+          },
+          "projectRoleId": {
+            "type": "integer",
+            "description": "The ID of the project role of the project member.",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The ID of the user for project member.",
+            "format": "int32"
+          },
+          "updateReportings": {
+            "$ref": "#/components/schemas/UpdateReportingsOption"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectMemberPut": {
+        "type": "object",
+        "properties": {
+          "externalChargeRateId": {
+            "type": "integer",
+            "description": "The ID of the charge rate of the user in the project.",
+            "format": "int32"
+          },
+          "projectRoleId": {
+            "type": "integer",
+            "description": "The ID of the project role of the project member.",
+            "format": "int32"
+          },
+          "updateReportings": {
+            "$ref": "#/components/schemas/UpdateReportingsOption"
           }
         },
         "additionalProperties": false
@@ -13742,7 +14906,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "69374"
+            "example": "95981"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -13755,13 +14919,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "77033"
+            "example": "83134"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "47793"
+            "example": "49426"
           },
           "projectMembers": {
             "type": "array",
@@ -13820,7 +14984,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "92792"
+            "example": "96389"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16136,6 +17300,15 @@
         },
         "additionalProperties": false
       },
+      "UpdateReportingsOption": {
+        "enum": [
+          "NoUpdate",
+          "AllUnapproved",
+          "AllUnbilled",
+          "All"
+        ],
+        "type": "string"
+      },
       "UserBase": {
         "type": "object",
         "properties": {
@@ -17014,6 +18187,10 @@
       "description": "This controller handles all company type to company related actions.\r\n\n\r\nThis represents the connection between a company type and a company."
     },
     {
+      "name": "ContactHistories",
+      "description": "This controller represents endpoints for contact histories."
+    },
+    {
       "name": "ContactPersons",
       "description": "This controller handles all contact person related actions."
     },
@@ -17095,7 +18272,7 @@
     },
     {
       "name": "Projects",
-      "description": "This controller handles all project related actions."
+      "description": "This controller handles all project-related actions."
     },
     {
       "name": "CostTypes",
