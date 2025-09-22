@@ -215,39 +215,6 @@
         }
       }
     },
-    "/v2/Integrations/awork": {
-      "post": {
-        "tags": [
-          "AworkIntegrations"
-        ],
-        "summary": "Triggers from awork to apply changes in the helloHQ system",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AworkWebhook"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AworkWebhook"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AworkWebhook"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/v2/BookingAccounts": {
       "get": {
         "tags": [
@@ -8015,7 +7982,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "69897"
+            "example": "37577"
           },
           "start": {
             "type": "string",
@@ -8051,7 +8018,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "94353"
+            "example": "85621"
           },
           "id": {
             "type": "integer",
@@ -8122,41 +8089,6 @@
           "Weeks"
         ],
         "type": "string"
-      },
-      "AworkWebhook": {
-        "type": "object",
-        "properties": {
-          "entityId": {
-            "type": "string",
-            "nullable": true
-          },
-          "entity": {
-            "nullable": true
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "eventType": {
-            "type": "string",
-            "nullable": true
-          },
-          "entityLink": {
-            "type": "string",
-            "nullable": true
-          },
-          "traceId": {
-            "type": "string",
-            "nullable": true
-          },
-          "triggeredBy": {
-            "nullable": true
-          },
-          "changes": {
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       },
       "BillingType": {
         "enum": [
@@ -8292,7 +8224,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "51627"
+            "example": "98228"
           },
           "plainMessage": {
             "type": "string",
@@ -8353,7 +8285,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "66505"
+            "example": "92517"
           }
         },
         "additionalProperties": false
@@ -9509,7 +9441,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "45385"
+            "example": "28025"
           }
         },
         "additionalProperties": false,
@@ -12705,7 +12637,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "97695"
+            "example": "88785"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -12746,7 +12678,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "78698"
+            "example": "41073"
           },
           "number": {
             "type": "string",
@@ -14390,7 +14322,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "90652"
+            "example": "73901"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14515,7 +14447,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "62777"
+            "example": "35686"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14906,7 +14838,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "95981"
+            "example": "54906"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14919,13 +14851,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "83134"
+            "example": "89828"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "49426"
+            "example": "58863"
           },
           "projectMembers": {
             "type": "array",
@@ -14984,7 +14916,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "96389"
+            "example": "11303"
           },
           "internalContactPersonId": {
             "type": "integer",
