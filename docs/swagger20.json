@@ -7448,6 +7448,7 @@
                   "updatedOn": "2023-09-24T11:25:22.516Z",
                   "updatedBy": "172738",
                   "employeeNumber": "123123",
+                  "isDeactivated": "False",
                   "firstName": "John",
                   "lastName": "Doe",
                   "eMailPrivate": "john.doe@address.com",
@@ -7982,7 +7983,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "37577"
+            "example": "31962"
           },
           "start": {
             "type": "string",
@@ -8018,7 +8019,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "85621"
+            "example": "94916"
           },
           "id": {
             "type": "integer",
@@ -8224,7 +8225,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "98228"
+            "example": "75703"
           },
           "plainMessage": {
             "type": "string",
@@ -8285,7 +8286,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "92517"
+            "example": "58809"
           }
         },
         "additionalProperties": false
@@ -9441,7 +9442,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "28025"
+            "example": "68126"
           }
         },
         "additionalProperties": false,
@@ -9455,7 +9456,8 @@
           "Meeting",
           "Visit",
           "Task",
-          "SentDocument"
+          "SentDocument",
+          "Unknown"
         ],
         "type": "string"
       },
@@ -12637,7 +12639,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "88785"
+            "example": "54003"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -12678,7 +12680,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "41073"
+            "example": "80317"
           },
           "number": {
             "type": "string",
@@ -14322,7 +14324,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "73901"
+            "example": "36583"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14447,7 +14449,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "35686"
+            "example": "42980"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14838,7 +14840,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "54906"
+            "example": "70137"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14851,13 +14853,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "89828"
+            "example": "98601"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "58863"
+            "example": "30111"
           },
           "projectMembers": {
             "type": "array",
@@ -14916,7 +14918,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "11303"
+            "example": "56039"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -17408,6 +17410,11 @@
             "description": "The company internal employee number of the user.",
             "nullable": true,
             "example": "123123"
+          },
+          "isDeactivated": {
+            "type": "boolean",
+            "description": "Whether the user is deactivated.",
+            "example": "False"
           }
         },
         "additionalProperties": false,
@@ -17475,6 +17482,11 @@
             "description": "The company internal employee number of the user.",
             "nullable": true,
             "example": "123123"
+          },
+          "isDeactivated": {
+            "type": "boolean",
+            "description": "Whether the user is deactivated.",
+            "example": "False"
           },
           "defaultAddress": {
             "$ref": "#/components/schemas/CompanyAddressGet"
@@ -18164,7 +18176,7 @@
     },
     {
       "name": "Users",
-      "description": "This controller handles all user related actions."
+      "description": "This controller handles all user-related actions."
     },
     {
       "name": "UserReportings",
