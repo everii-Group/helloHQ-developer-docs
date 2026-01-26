@@ -4785,6 +4785,70 @@
       }
     },
     "/v2/Projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Projects"
@@ -4851,46 +4915,21 @@
             }
           }
         }
-      },
+      }
+    },
+    "/v2/Projects/{id}": {
       "get": {
         "tags": [
           "Projects"
         ],
-        "summary": "Retrieves all entities that have not been deleted.",
-        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
         "parameters": [
           {
-            "name": "$filter",
-            "in": "query",
-            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "$skip",
-            "in": "query",
-            "description": "example: 0",
+            "name": "id",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
-          },
-          {
-            "name": "$top",
-            "in": "query",
-            "description": "example: 10",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
-            "schema": {
-              "type": "string"
             }
           },
           {
@@ -4908,18 +4947,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProjectGetRelated"
-                  }
+                  "$ref": "#/components/schemas/ProjectGetRelated"
                 }
               }
             }
           }
         }
-      }
-    },
-    "/v2/Projects/{id}": {
+      },
       "put": {
         "tags": [
           "Projects"
@@ -4993,45 +5027,6 @@
                   "startDate": "System.Nullable`1[System.DateTime]",
                   "companyId": 0,
                   "internalContactPersonId": "119"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Projects"
-        ],
-        "summary": "Retrieves the entity with the specified id",
-        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The ID of the entity to retrieve",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "expand",
-            "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectGetRelated"
                 }
               }
             }
@@ -5189,7 +5184,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ExternalChargeRate, ProjectRole, User, Project<br>",
             "schema": {
               "type": "string"
             }
@@ -5267,7 +5262,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ExternalChargeRate, ProjectRole, User, Project<br>",
             "schema": {
               "type": "string"
             }
@@ -5493,7 +5488,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "description": "<b>examples: </b><br>Parent<br>Parent,Project<br>ResourceToTasks,UserWorkingTimes<br>Comments,Integrations",
             "schema": {
               "type": "string"
             }
@@ -5571,7 +5566,7 @@
           {
             "name": "expand",
             "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>ProjectMembers, User, ProjectRole, ExternalChargeRate<br>",
+            "description": "<b>examples: </b><br>Parent<br>Parent,Project<br>ResourceToTasks,UserWorkingTimes<br>Comments,Integrations",
             "schema": {
               "type": "string"
             }
@@ -7983,7 +7978,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "31962"
+            "example": "86278"
           },
           "start": {
             "type": "string",
@@ -8019,7 +8014,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "94916"
+            "example": "26961"
           },
           "id": {
             "type": "integer",
@@ -8225,7 +8220,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "75703"
+            "example": "92694"
           },
           "plainMessage": {
             "type": "string",
@@ -8286,7 +8281,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "58809"
+            "example": "62504"
           }
         },
         "additionalProperties": false
@@ -9442,7 +9437,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "68126"
+            "example": "93500"
           }
         },
         "additionalProperties": false,
@@ -11057,6 +11052,13 @@
             "description": "The description of the document.",
             "nullable": true,
             "example": "This is a test document."
+          },
+          "deliveryDate": {
+            "type": "string",
+            "description": "The date of the delivery.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2024-01-01T00:00:00"
           }
         },
         "additionalProperties": false
@@ -11309,6 +11311,13 @@
             "description": "The description of the document.",
             "nullable": true,
             "example": "This is a test document."
+          },
+          "deliveryDate": {
+            "type": "string",
+            "description": "The date of the delivery.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2024-01-01T00:00:00"
           },
           "orderedElements": {
             "type": "array",
@@ -12639,7 +12648,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "54003"
+            "example": "66397"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -12680,7 +12689,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "80317"
+            "example": "45306"
           },
           "number": {
             "type": "string",
@@ -14324,7 +14333,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "36583"
+            "example": "41357"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14449,7 +14458,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "42980"
+            "example": "32898"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14840,7 +14849,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "70137"
+            "example": "32452"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14853,13 +14862,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "98601"
+            "example": "63135"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "30111"
+            "example": "77337"
           },
           "projectMembers": {
             "type": "array",
@@ -14918,7 +14927,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "56039"
+            "example": "80549"
           },
           "internalContactPersonId": {
             "type": "integer",
