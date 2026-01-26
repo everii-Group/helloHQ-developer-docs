@@ -599,8 +599,32 @@ filter=name eq 'hello &amp; hq'   &lt;- incorrect</code></pre>
         </tr>
         </table>
     </div>
+
+    <h2>Custom fields</h2>
+    <p>Filtering custom fields requires special attention due to their complex database structure. Custom fields are returned as an array within your requested entities with the following model:</p>
+    <div class="code-container">
+        <pre class="language-http">
+<code>[...]
+"customFields": [
+    {
+        "filterName": "CustomFieldText1", // Use this property for filtering
+        "name": "Short company name", // Display name configured in your helloHQ
+        "type": "Text", // Custom field type
+        "value": "HQ" // Custom field value
+    }
+],
+[...]</code></pre>
+    </div>
+
+    <p>While custom fields are displayed as an array, filtering must be performed directly on the entity using the <code>filterName</code> property.
+        <br \><br \><b>Example:</b>
+        <div class="code-container" onclick="copyToClipboard(this)">
+            <button class="copy-button">Copy</button>
+            <pre><code class="language-http">GET https://api.hellohq.io/Companies?$filter=customFields/customFieldText1 eq 'HQ'</code></pre>
+        </div>
+    </p>
 </div>
-        
+
 <div class="content" id="v2_order">
     <h1>Ordering</h1>
     <p>In some cases, you may want to order the result set of your query. This can be done using the <code>orderby</code> parameter.<br>
