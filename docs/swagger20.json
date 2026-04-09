@@ -4473,6 +4473,447 @@
         }
       }
     },
+    "/v2/Leads": {
+      "post": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Creates a new lead.",
+        "description": "You can create a lead by providing the LeadPost-Model in the request body.\r\n\n\r\nIf you add a lead number to the model, it will be used as the lead number only if\r\nthere is no number schema defined for the lead. Otherwise, the number schema will be used.\r\n\n\r\nIt is possible to define the volume of the lead. But this is a generated value in helloHQ. This means,\r\nwhen you later create planned revenues for the lead, the volume will be overwritten.",
+        "requestBody": {
+          "description": "LeadPost-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "99999",
+                  "createdOn": "2025-06-30T00:00:00.000Z",
+                  "createdBy": "99999",
+                  "updatedOn": "2025-06-30T00:00:00.000Z",
+                  "updatedBy": "99999",
+                  "statusId": "99999",
+                  "name": "Manni Mustermann",
+                  "number": "99",
+                  "volume": 0,
+                  "cashOn": "2025-06-30T00:00:00.000Z",
+                  "currency": "EUR",
+                  "probability": "100",
+                  "companyId": "99999",
+                  "projectId": "99999",
+                  "responsibleUserId": "99999"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Retrieves all entities that have not been deleted.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Status, Company, Project, ResponsibleUser, ContactPersons, Subsystems<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeadGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Leads/{id}": {
+      "put": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Updates the lead associated with the specified id.",
+        "description": "You can update a lead by providing the ID in the URL and the LeadPut-Model in the body\r\n\n\r\nIf you add a lead number to the model, it will be used as the lead number only if\r\nthere is no number schema defined for the lead. Otherwise, the number schema will be used.\r\n\n\r\nIt is possible to define the volume of the lead. But this is a generated value in helloHQ. This means,\r\nwhen you later create planned revenues for the lead, the volume will be overwritten.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the lead to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "LeadPut-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "99999",
+                  "createdOn": "2025-06-30T00:00:00.000Z",
+                  "createdBy": "99999",
+                  "updatedOn": "2025-06-30T00:00:00.000Z",
+                  "updatedBy": "99999",
+                  "statusId": "99999",
+                  "name": "Manni Mustermann",
+                  "number": "99",
+                  "volume": 0,
+                  "cashOn": "2025-06-30T00:00:00.000Z",
+                  "currency": "EUR",
+                  "probability": "100",
+                  "companyId": "99999",
+                  "projectId": "99999",
+                  "responsibleUserId": "99999"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Deletes the lead associated with the specified id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the lead to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Status, Company, Project, ResponsibleUser, ContactPersons, Subsystems<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadGetRelated"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Leads/{leadId}/Status": {
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Retrieves the status of the lead with the specified id.",
+        "description": "To retrieve a status, provide the ID of the related lead in the URL.",
+        "parameters": [
+          {
+            "name": "leadId",
+            "in": "path",
+            "description": "The ID of the lead to retrieve the status for",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "99999",
+                  "createdOn": "2025-06-30T00:00:00.000Z",
+                  "createdBy": "99999",
+                  "updatedOn": "2025-06-30T00:00:00.000Z",
+                  "updatedBy": "99999",
+                  "name": "First contact",
+                  "order": "-",
+                  "type": "Successful"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Leads"
+        ],
+        "summary": "Updates the status of the lead with the specified id.",
+        "description": "<p> To set the status of a lead, provide the lead ID in the URL, and a LeadStatusPut model in the request body.</p>",
+        "parameters": [
+          {
+            "name": "leadId",
+            "in": "path",
+            "description": "The ID of the associated lead.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "LeadStatusPut model containing the new status to set the lead to.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadStatusPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadStatusPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadStatusPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "99999",
+                  "createdOn": "2025-06-30T00:00:00.000Z",
+                  "createdBy": "99999",
+                  "updatedOn": "2025-06-30T00:00:00.000Z",
+                  "updatedBy": "99999",
+                  "name": "First contact",
+                  "order": "-",
+                  "type": "Successful"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/LeadStatus": {
+      "get": {
+        "tags": [
+          "LeadStatus"
+        ],
+        "summary": "Retrieves all entities that have not been deleted.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeadStatusGet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/LeadStatus/{id}": {
+      "get": {
+        "tags": [
+          "LeadStatus"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadStatusGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/OwnCompanies": {
       "get": {
         "tags": [
@@ -7444,6 +7885,7 @@
                   "updatedBy": "172738",
                   "employeeNumber": "123123",
                   "isDeactivated": "False",
+                  "department": "HR",
                   "firstName": "John",
                   "lastName": "Doe",
                   "eMailPrivate": "john.doe@address.com",
@@ -7978,7 +8420,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "86278"
+            "example": "61981"
           },
           "start": {
             "type": "string",
@@ -8014,7 +8456,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "26961"
+            "example": "67925"
           },
           "id": {
             "type": "integer",
@@ -8220,7 +8662,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "92694"
+            "example": "81296"
           },
           "plainMessage": {
             "type": "string",
@@ -8281,7 +8723,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "62504"
+            "example": "59878"
           }
         },
         "additionalProperties": false
@@ -9437,7 +9879,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "93500"
+            "example": "78718"
           }
         },
         "additionalProperties": false,
@@ -12648,7 +13090,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "66397"
+            "example": "84123"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -12689,7 +13131,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "45306"
+            "example": "79387"
           },
           "number": {
             "type": "string",
@@ -13740,6 +14182,419 @@
         },
         "additionalProperties": false
       },
+      "LeadGetRelated": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the lead.",
+            "nullable": true,
+            "example": "Manni Mustermann"
+          },
+          "number": {
+            "type": "string",
+            "description": "The number of the lead.\r\nNOTE: If lead number schema is configured, this will be ignored on POST and PUT!",
+            "nullable": true,
+            "example": "99"
+          },
+          "volume": {
+            "type": "number",
+            "description": "The volume of the lead",
+            "format": "double",
+            "nullable": true
+          },
+          "cashOn": {
+            "type": "string",
+            "description": "The cash on date of the lead.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "currency": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The currency for the lead.",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "probability": {
+            "type": "integer",
+            "description": "The probability for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "100"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The ID of project for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "responsibleUserId": {
+            "type": "integer",
+            "description": "The ID of responsible user for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "id": {
+            "type": "integer",
+            "description": "The id of the lead.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the lead was created in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user id of the user who created the lead.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the lead was last updated in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user id of the user who last updated the lead.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "statusId": {
+            "type": "integer",
+            "description": "The ID of the lead status.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeadStatusGet"
+          },
+          "company": {
+            "$ref": "#/components/schemas/CompanyGet"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectGet"
+          },
+          "responsibleUser": {
+            "$ref": "#/components/schemas/UserGet"
+          },
+          "contactPersons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPersonGet"
+            },
+            "description": "Contact persons associated with this lead.",
+            "nullable": true
+          },
+          "subsystems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubsystemBase"
+            },
+            "description": "Subsystem associated with this lead.",
+            "nullable": true
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldGet"
+            },
+            "description": "The custom fields of the lead.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "This is the LeadGetRelated model."
+      },
+      "LeadPost": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the lead.",
+            "nullable": true,
+            "example": "Manni Mustermann"
+          },
+          "number": {
+            "type": "string",
+            "description": "The number of the lead.\r\nNOTE: If lead number schema is configured, this will be ignored on POST and PUT!",
+            "nullable": true,
+            "example": "99"
+          },
+          "volume": {
+            "type": "number",
+            "description": "The volume of the lead",
+            "format": "double",
+            "nullable": true
+          },
+          "cashOn": {
+            "type": "string",
+            "description": "The cash on date of the lead.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "currency": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The currency for the lead.",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "probability": {
+            "type": "integer",
+            "description": "The probability for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "100"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The ID of project for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "responsibleUserId": {
+            "type": "integer",
+            "description": "The ID of responsible user for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "statusId": {
+            "type": "integer",
+            "description": "The ID of the lead status.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The ID of the contact person for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "subsystemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "List of subsystems id's for the lead.",
+            "nullable": true
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldContentBase"
+            },
+            "description": "The custom fields associated with the lead.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "This is the LeadPost model."
+      },
+      "LeadPut": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the lead.",
+            "nullable": true,
+            "example": "Manni Mustermann"
+          },
+          "number": {
+            "type": "string",
+            "description": "The number of the lead.\r\nNOTE: If lead number schema is configured, this will be ignored on POST and PUT!",
+            "nullable": true,
+            "example": "99"
+          },
+          "volume": {
+            "type": "number",
+            "description": "The volume of the lead",
+            "format": "double",
+            "nullable": true
+          },
+          "cashOn": {
+            "type": "string",
+            "description": "The cash on date of the lead.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "currency": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "The currency for the lead.",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "probability": {
+            "type": "integer",
+            "description": "The probability for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "100"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "The ID of the company for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "The ID of project for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "responsibleUserId": {
+            "type": "integer",
+            "description": "The ID of responsible user for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "statusId": {
+            "type": "integer",
+            "description": "The ID of the lead status.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "contactPersonId": {
+            "type": "integer",
+            "description": "The ID of the contact person for the lead.",
+            "format": "int32",
+            "nullable": true,
+            "example": "99999"
+          },
+          "subsystemIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "List of subsystems id's for the lead.",
+            "nullable": true
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomFieldContentBase"
+            },
+            "description": "The custom fields associated with the lead.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "This is the LeadPut model."
+      },
+      "LeadStatusGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the lead status.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the lead status was created in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user id of the user who created the lead status.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the lead status was last updated in utc.",
+            "format": "date-time",
+            "example": "2025-06-30T00:00:00.000Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user id of the user who last updated the lead status.",
+            "format": "int32",
+            "example": "99999"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the lead status.",
+            "nullable": true,
+            "example": "First contact"
+          },
+          "order": {
+            "maxLength": 99,
+            "minLength": 0,
+            "type": "string",
+            "description": "The order of the lead status.",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/LeadStatusType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This is the LeadStatusGet model."
+      },
+      "LeadStatusPut": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "integer",
+            "description": "The ID of the new lead status.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This is the LeadStatusPut model."
+      },
+      "LeadStatusType": {
+        "enum": [
+          "NotSet",
+          "Successful",
+          "Unsuccessful",
+          "Open"
+        ],
+        "type": "string"
+      },
       "LoginModel": {
         "type": "object",
         "properties": {
@@ -14333,7 +15188,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "41357"
+            "example": "49446"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14458,7 +15313,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "32898"
+            "example": "64039"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14849,7 +15704,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "32452"
+            "example": "56530"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -14862,13 +15717,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "63135"
+            "example": "36614"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "77337"
+            "example": "41903"
           },
           "projectMembers": {
             "type": "array",
@@ -14927,7 +15782,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "80549"
+            "example": "20532"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16244,6 +17099,7 @@
       },
       "TaskClassification": {
         "enum": [
+          "None",
           "Project",
           "ContactHistory",
           "File",
@@ -17424,6 +18280,12 @@
             "type": "boolean",
             "description": "Whether the user is deactivated.",
             "example": "False"
+          },
+          "department": {
+            "type": "string",
+            "description": "The department of the user.",
+            "nullable": true,
+            "example": "HR"
           }
         },
         "additionalProperties": false,
@@ -17497,6 +18359,12 @@
             "description": "Whether the user is deactivated.",
             "example": "False"
           },
+          "department": {
+            "type": "string",
+            "description": "The department of the user.",
+            "nullable": true,
+            "example": "HR"
+          },
           "defaultAddress": {
             "$ref": "#/components/schemas/CompanyAddressGet"
           },
@@ -17506,10 +18374,73 @@
               "$ref": "#/components/schemas/CustomFieldGet"
             },
             "nullable": true
+          },
+          "userGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserGroupGet"
+            },
+            "description": "The user groups of the user.\r\nAvailable with expansion \"UserGroups\".",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "GET-RELATED-Model for User."
+      },
+      "UserGroupGet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the user group.",
+            "format": "int32",
+            "example": "15"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the user group was created in utc.",
+            "format": "date-time",
+            "example": "2023-07-24T11:25:22.516Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user ID of the user who created the user group.",
+            "format": "int32",
+            "example": "172737"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the user group was last updated in utc.",
+            "format": "date-time",
+            "example": "2023-09-24T11:25:22.516Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user ID of the user group who last updated the user group.",
+            "format": "int32",
+            "example": "172738"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the user group.",
+            "nullable": true,
+            "example": "HR"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the user group.",
+            "nullable": true,
+            "example": "Human Resources Department"
+          },
+          "rightLevel": {
+            "type": "integer",
+            "description": "The right level of the user group.",
+            "format": "int32",
+            "nullable": true,
+            "example": "4"
+          }
+        },
+        "additionalProperties": false
       },
       "UserPut": {
         "type": "object",
@@ -18141,7 +19072,7 @@
     },
     {
       "name": "ContactHistories",
-      "description": "This controller represents endpoints for contact histories."
+      "description": "This controller handles all actions related to contact histories."
     },
     {
       "name": "ContactPersons",
@@ -18170,6 +19101,14 @@
     {
       "name": "OwnCompanies",
       "description": "This controller handles all own company related actions."
+    },
+    {
+      "name": "Leads",
+      "description": "This controller handles all actions related to leads."
+    },
+    {
+      "name": "LeadStatus",
+      "description": "This controller handles all actions related to lead status."
     },
     {
       "name": "PlannedCosts",
