@@ -632,12 +632,12 @@ filter=name eq 'hello &amp; hq'   &lt;- incorrect</code></pre>
     <code>orderby=updatedOn desc</code></p>
     <p>Here are some additional examples:</p>
     <p>The following statement orders the users by the LastName property in ascending order. If no specific order (ascending <code>asc</code> or descending <code>desc</code>) is defined, ascending order is the default:<br>
-    <code>/users?orderby=LastName asc</code></p>
+    <code>/Users?orderby=LastName asc</code></p>
     <p>You can also add multiple order statements by listing the properties, separated by commas. Note that spaces before or after the commas are not allowed.<br>
     The following URL filters by LastName in ascending order first, and then by FirstName in descending order:<br>
-    <code>/users?orderby=LastName,FirstName desc</code></p>
+    <code>/Users?orderby=LastName,FirstName desc</code></p>
     <p>If you want to order by a nested property, separate the properties with a slash:<br>
-    <code>/projects?orderby=ProjectStatus/Type desc</code></p>
+    <code>/Projects?orderby=ProjectStatus/Id desc</code></p>
 </div>
     
 <div class="content" id="v2_pagination">
