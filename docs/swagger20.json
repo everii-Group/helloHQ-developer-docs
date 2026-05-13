@@ -5008,6 +5008,64 @@
       }
     },
     "/v2/PlannedCosts": {
+      "post": {
+        "tags": [
+          "PlannedCosts"
+        ],
+        "summary": "Creates a new planned cost.",
+        "description": "You can create a planned cost by providing the PlannedCostPost-Model in the request body.\r\n\n\r\nThe `companyId` must be set.\r\n\n\r\nThe values like netTotal, grossTotal, etc. are calculated when positions are added or updated\r\nvia the position endpoints, v2/DocumentPositions/FreeTextPosition for example.\r\n\n\r\nEstimations are calculated automatically based on the provided values.\r\n\n\n\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
+        "requestBody": {
+          "description": "PlannedCostPost-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "status": "Planned",
+                  "note": "Nicely planned for our monthly budget",
+                  "interval": "Monthly",
+                  "startDate": "2025-01-01T00:00:00",
+                  "dueDate": "2025-12-31T00:00:00",
+                  "dueMonth": "6",
+                  "dueDay": "10",
+                  "performancePeriodType": "DueDateMonth",
+                  "invoiceDateType": "InvoiceCreation",
+                  "currency": "EUR",
+                  "marginPercent": "0.03",
+                  "discountPercent": "0.01",
+                  "companyId": "119",
+                  "leadId": "422",
+                  "projectId": "395"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "PlannedCosts"
@@ -5076,6 +5134,99 @@
       }
     },
     "/v2/PlannedCosts/{id}": {
+      "put": {
+        "tags": [
+          "PlannedCosts"
+        ],
+        "summary": "Updates the planned cost associated with the specified id.",
+        "description": "You can update a planned cost by providing the ID in the URL and the PlannedCostPut-Model in the request body.\r\n\n\r\nEstimations are recalculated automatically whenever the net value or date fields change.\r\n\n\n\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the planned cost to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "PlannedCostPut-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "status": "Planned",
+                  "note": "Nicely planned for our monthly budget",
+                  "interval": "Monthly",
+                  "startDate": "2025-01-01T00:00:00",
+                  "dueDate": "2025-12-31T00:00:00",
+                  "dueMonth": "6",
+                  "dueDay": "10",
+                  "performancePeriodType": "DueDateMonth",
+                  "invoiceDateType": "InvoiceCreation",
+                  "currency": "EUR",
+                  "marginPercent": "0.03",
+                  "discountPercent": "0.01",
+                  "companyId": "119",
+                  "leadId": "422",
+                  "projectId": "395"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PlannedCosts"
+        ],
+        "summary": "Deletes the planned cost associated with the specified id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the planned cost to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "get": {
         "tags": [
           "PlannedCosts"
@@ -5116,7 +5267,104 @@
         }
       }
     },
+    "/v2/PlannedCosts/{id}/ChangeStatusTo/{status}": {
+      "post": {
+        "tags": [
+          "PlannedCosts"
+        ],
+        "summary": "Changes the status of the specified document.",
+        "description": "To change the status of a document, provide the document ID in the URL and the new status.\r\n\n\r\nThe status name can be one of the following:\r\n- Quoted\r\n- Planned\r\n- Billed\r\n- Deferred\r\n- Declined",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the document.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "The status name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/v2/PlannedRevenues": {
+      "post": {
+        "tags": [
+          "PlannedRevenues"
+        ],
+        "summary": "Creates a new planned revenue.",
+        "description": "You can create a planned revenue by providing the PlannedRevenuePost-Model in the request body.\r\n\n\r\nThe `companyId` must be set.\r\n\n\r\nThe values like netTotal, grossTotal, etc. are calculated when positions are added or updated\r\nvia the position endpoints, v2/DocumentPositions/FreeTextPosition for example.\r\n\n\r\nEstimations are calculated automatically based on the provided values.\r\n\n\n`invoiceType`: This type is used to determine the type of the document which is created out of the planned revenue.\r\n\n\n`invoiceDateType`: This type is used to determine the date type of the document which is created out of the planned revenue.\r\n\n\r\n- InvoiceCreation: The date the document is created\r\n- DueDate: The due date the document is planned for\r\n- LastDayOfPerformancePeriod: The last day of the performance period of the planned revenue\r\n- LastDayOfMonthBeforeDueDate: The last day of the month before the due date of the planned revenue\r\n \n`performancePeriodType`: This type is used to determine the performance period of the document which is created out of the planned revenue.\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
+        "requestBody": {
+          "description": "PlannedRevenuePost-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "type": "Standard",
+                  "status": "Planned",
+                  "netValue": "1000.01",
+                  "grossValue": "10500.07",
+                  "note": "Nicely planned for our monthly budget",
+                  "interval": "Monthly",
+                  "startDate": "2025-01-01T00:00:00",
+                  "dueDate": "2025-12-31T00:00:00",
+                  "dueMonth": "6",
+                  "dueDay": "10",
+                  "performancePeriodType": "DueDateMonth",
+                  "invoiceType": "Invoice",
+                  "invoiceDateType": "InvoiceCreation",
+                  "currency": "EUR",
+                  "marginPercent": "0.03",
+                  "discountPercent": "0.01",
+                  "companyId": "119",
+                  "leadId": "422",
+                  "projectId": "395"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "PlannedRevenues"
@@ -5185,6 +5433,103 @@
       }
     },
     "/v2/PlannedRevenues/{id}": {
+      "put": {
+        "tags": [
+          "PlannedRevenues"
+        ],
+        "summary": "Updates the planned revenue associated with the specified id.",
+        "description": "You can update a planned revenue by providing the ID in the URL and the PlannedRevenuePut-Model in the request body.\r\n\n\r\nEstimations are recalculated automatically whenever the net value or date fields change.\r\n\n\n`invoiceType`: This type is used to determine the type of the document which is created out of the planned revenue.\r\n\n\n`invoiceDateType`: This type is used to determine the date type of the document which is created out of the planned revenue.\r\n\n\r\n- InvoiceCreation: The date the document is created\r\n- DueDate: The due date the document is planned for\r\n- LastDayOfPerformancePeriod: The last day of the performance period of the planned revenue\r\n- LastDayOfMonthBeforeDueDate: The last day of the month before the due date of the planned revenue\r\n \n`performancePeriodType`: This type is used to determine the performance period of the document which is created out of the planned revenue.\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the planned revenue to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "PlannedRevenuePut-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedRevenuePut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "type": "Standard",
+                  "status": "Planned",
+                  "netValue": "1000.01",
+                  "grossValue": "10500.07",
+                  "note": "Nicely planned for our monthly budget",
+                  "interval": "Monthly",
+                  "startDate": "2025-01-01T00:00:00",
+                  "dueDate": "2025-12-31T00:00:00",
+                  "dueMonth": "6",
+                  "dueDay": "10",
+                  "performancePeriodType": "DueDateMonth",
+                  "invoiceType": "Invoice",
+                  "invoiceDateType": "InvoiceCreation",
+                  "currency": "EUR",
+                  "marginPercent": "0.03",
+                  "discountPercent": "0.01",
+                  "companyId": "119",
+                  "leadId": "422",
+                  "projectId": "395"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PlannedRevenues"
+        ],
+        "summary": "Deletes the planned revenue associated with the specified id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the planned revenue to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "get": {
         "tags": [
           "PlannedRevenues"
@@ -5221,6 +5566,41 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v2/PlannedRevenues/{id}/ChangeStatusTo/{status}": {
+      "post": {
+        "tags": [
+          "PlannedRevenues"
+        ],
+        "summary": "Changes the status of the specified document.",
+        "description": "To change the status of a document, provide the document ID in the URL and the new status.\r\n\n\r\nThe status name can be one of the following:\r\n- Quoted\r\n- Planned\r\n- Billed\r\n- Deferred\r\n- Declined",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the document.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "The status name.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -6691,6 +7071,115 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectTemplateGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Resources": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Retrieves all entities that have not been deleted.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>User<br><br>ResourceCategory<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/Resources/{id}": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>User<br><br>ResourceCategory<br>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceGetRelated"
                 }
               }
             }
@@ -8420,7 +8909,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "61981"
+            "example": "53309"
           },
           "start": {
             "type": "string",
@@ -8456,7 +8945,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "67925"
+            "example": "98864"
           },
           "id": {
             "type": "integer",
@@ -8662,7 +9151,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "81296"
+            "example": "90634"
           },
           "plainMessage": {
             "type": "string",
@@ -8723,7 +9212,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "59878"
+            "example": "29671"
           }
         },
         "additionalProperties": false
@@ -9879,7 +10368,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "78718"
+            "example": "35856"
           }
         },
         "additionalProperties": false,
@@ -13090,7 +13579,7 @@
           "companyId": {
             "type": "integer",
             "format": "int32",
-            "example": "84123"
+            "example": "34297"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
@@ -13131,7 +13620,7 @@
           "documentTemplateEntityId": {
             "type": "integer",
             "format": "int32",
-            "example": "79387"
+            "example": "40267"
           },
           "number": {
             "type": "string",
@@ -14778,9 +15267,6 @@
       "PlannedCostGetRelated": {
         "type": "object",
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/PlannedRevenueType"
-          },
           "description": {
             "type": "string",
             "description": "A description for the document",
@@ -14793,7 +15279,7 @@
             "type": "string",
             "description": "Start date of invoicing",
             "format": "date-time",
-            "example": "2023-05-01T00:00:00.000Z"
+            "example": "2025-01-01T00:00:00"
           },
           "endDate": {
             "type": "string",
@@ -14818,27 +15304,8 @@
           "performancePeriod": {
             "$ref": "#/components/schemas/PerformancePeriodType"
           },
-          "invoiceType": {
-            "$ref": "#/components/schemas/InvoiceType"
-          },
           "invoiceDate": {
             "$ref": "#/components/schemas/InvoiceDateType"
-          },
-          "status": {
-            "type": "string",
-            "description": "Status of this document",
-            "nullable": true,
-            "example": "Planned"
-          },
-          "netTotal": {
-            "type": "number",
-            "description": "Net value of this document",
-            "format": "double"
-          },
-          "grossTotal": {
-            "type": "number",
-            "description": "Gross value of this document",
-            "format": "double"
           },
           "currency": {
             "type": "string",
@@ -14860,9 +15327,8 @@
           },
           "companyId": {
             "type": "integer",
-            "description": "ID of company (client or supplier) associated with this document",
+            "description": "ID of company (supplier) associated with this document",
             "format": "int32",
-            "nullable": true,
             "example": "119"
           },
           "leadId": {
@@ -14908,6 +15374,12 @@
             "description": "ID of user who last updated this document",
             "format": "int32",
             "example": "4"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of this document",
+            "nullable": true,
+            "example": "Planned"
           },
           "company": {
             "$ref": "#/components/schemas/CompanyGet"
@@ -14961,14 +15433,182 @@
             "example": "Username,TaskName,ReportingComment,ReportingDate"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "This class represents a planned cost document with all related entities expanded (Company, Lead, Project, Positions, Estimations)."
+      },
+      "PlannedCostPost": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A description for the document",
+            "nullable": true
+          },
+          "interval": {
+            "$ref": "#/components/schemas/DocumentInterval"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date of invoicing",
+            "format": "date-time",
+            "example": "2025-01-01T00:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Last date of invoicing",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueMonth": {
+            "type": "integer",
+            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "format": "int32",
+            "nullable": true,
+            "example": "6"
+          },
+          "dueDay": {
+            "type": "integer",
+            "description": "Day of the month on which invoices are due",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "performancePeriod": {
+            "$ref": "#/components/schemas/PerformancePeriodType"
+          },
+          "invoiceDate": {
+            "$ref": "#/components/schemas/InvoiceDateType"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of all monetary figures in this document",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "marginPercent": {
+            "type": "number",
+            "description": "Margin that is applied to this document",
+            "format": "double",
+            "example": "0.03"
+          },
+          "discountPercent": {
+            "type": "number",
+            "description": "Discount that is applied to this document",
+            "format": "double",
+            "example": "0.01"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "ID of company (supplier) associated with this document",
+            "format": "int32",
+            "example": "119"
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "ID of the lead associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "422"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "ID of the project associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "395"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This class represents the model for creating a new planned cost."
+      },
+      "PlannedCostPut": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A description for the document",
+            "nullable": true
+          },
+          "interval": {
+            "$ref": "#/components/schemas/DocumentInterval"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date of invoicing",
+            "format": "date-time",
+            "example": "2025-01-01T00:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Last date of invoicing",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueMonth": {
+            "type": "integer",
+            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "format": "int32",
+            "nullable": true,
+            "example": "6"
+          },
+          "dueDay": {
+            "type": "integer",
+            "description": "Day of the month on which invoices are due",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "performancePeriod": {
+            "$ref": "#/components/schemas/PerformancePeriodType"
+          },
+          "invoiceDate": {
+            "$ref": "#/components/schemas/InvoiceDateType"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of all monetary figures in this document",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "marginPercent": {
+            "type": "number",
+            "description": "Margin that is applied to this document",
+            "format": "double",
+            "example": "0.03"
+          },
+          "discountPercent": {
+            "type": "number",
+            "description": "Discount that is applied to this document",
+            "format": "double",
+            "example": "0.01"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "ID of company (supplier) associated with this document",
+            "format": "int32",
+            "example": "119"
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "ID of the lead associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "422"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "ID of the project associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "395"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This class represents the model for updating an existing planned cost."
       },
       "PlannedRevenueGetRelated": {
         "type": "object",
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/PlannedRevenueType"
-          },
           "description": {
             "type": "string",
             "description": "A description for the document",
@@ -14981,7 +15621,7 @@
             "type": "string",
             "description": "Start date of invoicing",
             "format": "date-time",
-            "example": "2023-05-01T00:00:00.000Z"
+            "example": "2025-01-01T00:00:00"
           },
           "endDate": {
             "type": "string",
@@ -15012,22 +15652,6 @@
           "invoiceDate": {
             "$ref": "#/components/schemas/InvoiceDateType"
           },
-          "status": {
-            "type": "string",
-            "description": "Status of this document",
-            "nullable": true,
-            "example": "Planned"
-          },
-          "netTotal": {
-            "type": "number",
-            "description": "Net value of this document",
-            "format": "double"
-          },
-          "grossTotal": {
-            "type": "number",
-            "description": "Gross value of this document",
-            "format": "double"
-          },
           "currency": {
             "type": "string",
             "description": "Currency of all monetary figures in this document",
@@ -15050,7 +15674,6 @@
             "type": "integer",
             "description": "ID of company (client or supplier) associated with this document",
             "format": "int32",
-            "nullable": true,
             "example": "119"
           },
           "leadId": {
@@ -15096,6 +15719,25 @@
             "description": "ID of user who last updated this document",
             "format": "int32",
             "example": "4"
+          },
+          "type": {
+            "$ref": "#/components/schemas/PlannedRevenueType"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of this document",
+            "nullable": true,
+            "example": "Planned"
+          },
+          "netTotal": {
+            "type": "number",
+            "description": "Net value of this document",
+            "format": "double"
+          },
+          "grossTotal": {
+            "type": "number",
+            "description": "Gross value of this document",
+            "format": "double"
           },
           "company": {
             "$ref": "#/components/schemas/CompanyGet"
@@ -15149,7 +15791,187 @@
             "example": "Username,TaskName,ReportingComment,ReportingDate"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "This class represents a planned revenue document with all related entities expanded (Company, Lead, Project, Positions, Estimations)."
+      },
+      "PlannedRevenuePost": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A description for the document",
+            "nullable": true
+          },
+          "interval": {
+            "$ref": "#/components/schemas/DocumentInterval"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date of invoicing",
+            "format": "date-time",
+            "example": "2025-01-01T00:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Last date of invoicing",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueMonth": {
+            "type": "integer",
+            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "format": "int32",
+            "nullable": true,
+            "example": "6"
+          },
+          "dueDay": {
+            "type": "integer",
+            "description": "Day of the month on which invoices are due",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "performancePeriod": {
+            "$ref": "#/components/schemas/PerformancePeriodType"
+          },
+          "invoiceType": {
+            "$ref": "#/components/schemas/InvoiceType"
+          },
+          "invoiceDate": {
+            "$ref": "#/components/schemas/InvoiceDateType"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of all monetary figures in this document",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "marginPercent": {
+            "type": "number",
+            "description": "Margin that is applied to this document",
+            "format": "double",
+            "example": "0.03"
+          },
+          "discountPercent": {
+            "type": "number",
+            "description": "Discount that is applied to this document",
+            "format": "double",
+            "example": "0.01"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "ID of company (client or supplier) associated with this document",
+            "format": "int32",
+            "example": "119"
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "ID of the lead associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "422"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "ID of the project associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "395"
+          },
+          "documentType": {
+            "$ref": "#/components/schemas/DocumentType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This class represents the model for creating a new planned revenue."
+      },
+      "PlannedRevenuePut": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A description for the document",
+            "nullable": true
+          },
+          "interval": {
+            "$ref": "#/components/schemas/DocumentInterval"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date of invoicing",
+            "format": "date-time",
+            "example": "2025-01-01T00:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Last date of invoicing",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueMonth": {
+            "type": "integer",
+            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "format": "int32",
+            "nullable": true,
+            "example": "6"
+          },
+          "dueDay": {
+            "type": "integer",
+            "description": "Day of the month on which invoices are due",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "performancePeriod": {
+            "$ref": "#/components/schemas/PerformancePeriodType"
+          },
+          "invoiceType": {
+            "$ref": "#/components/schemas/InvoiceType"
+          },
+          "invoiceDate": {
+            "$ref": "#/components/schemas/InvoiceDateType"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of all monetary figures in this document",
+            "nullable": true,
+            "example": "EUR"
+          },
+          "marginPercent": {
+            "type": "number",
+            "description": "Margin that is applied to this document",
+            "format": "double",
+            "example": "0.03"
+          },
+          "discountPercent": {
+            "type": "number",
+            "description": "Discount that is applied to this document",
+            "format": "double",
+            "example": "0.01"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "ID of company (client or supplier) associated with this document",
+            "format": "int32",
+            "example": "119"
+          },
+          "leadId": {
+            "type": "integer",
+            "description": "ID of the lead associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "422"
+          },
+          "projectId": {
+            "type": "integer",
+            "description": "ID of the project associated with this document",
+            "format": "int32",
+            "nullable": true,
+            "example": "395"
+          }
+        },
+        "additionalProperties": false,
+        "description": "This class represents the model for updating an existing planned revenue."
       },
       "PlannedRevenueType": {
         "enum": [
@@ -15157,7 +15979,8 @@
           "Standard",
           "TimeAndMaterial"
         ],
-        "type": "string"
+        "type": "string",
+        "description": "This enum represents the possible PlannedRevenueTypes (None, Standard and TimeAndMaterial)."
       },
       "ProjectGet": {
         "required": [
@@ -15188,7 +16011,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "49446"
+            "example": "60680"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -15313,7 +16136,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "64039"
+            "example": "71813"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -15704,7 +16527,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "56530"
+            "example": "91901"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -15717,13 +16540,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "36614"
+            "example": "11460"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "41903"
+            "example": "90465"
           },
           "projectMembers": {
             "type": "array",
@@ -15782,7 +16605,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "20532"
+            "example": "96468"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -15993,7 +16816,7 @@
         ],
         "type": "string"
       },
-      "ResourceCategoryBase": {
+      "ResourceCategoryGet": {
         "type": "object",
         "properties": {
           "id": {
@@ -16007,6 +16830,12 @@
             "description": "The name of this resource category.",
             "nullable": true,
             "example": "default group"
+          },
+          "isDefaultGroup": {
+            "type": "boolean",
+            "description": "Whether this resource category is the default group.",
+            "nullable": true,
+            "example": "True"
           }
         },
         "additionalProperties": false,
@@ -16015,42 +16844,75 @@
       "ResourceGetRelated": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "name": {
             "type": "string",
-            "nullable": true
+            "description": "The name of the resource.",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the resource (Personal, Machine, Room, Vehicle, Other).",
+            "nullable": true,
+            "example": "Personal"
           },
           "userId": {
             "type": "integer",
+            "description": "The ID of the linked user, if any.",
             "format": "int32",
             "nullable": true,
-            "example": null
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserDto"
+            "example": "11014"
           },
           "resourceCategoryId": {
             "type": "integer",
+            "description": "The ID of the resource category this resource belongs to.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "22"
           },
-          "isActive": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the resource.",
+            "format": "int32",
+            "example": "42"
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "When the resource was created in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "createdBy": {
+            "type": "integer",
+            "description": "The user ID of the user who created the resource.",
+            "format": "int32",
+            "example": "4"
+          },
+          "updatedOn": {
+            "type": "string",
+            "description": "When the resource was last updated in utc.",
+            "format": "date-time",
+            "example": "2024-10-30T15:42:32.290Z"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "description": "The user ID of the user who last updated the resource.",
+            "format": "int32",
+            "example": "4"
+          },
+          "isDeactivated": {
             "type": "boolean",
-            "nullable": true
+            "description": "Whether the resource is deactivated.\r\nTrue when the linked user is deleted or deactivated.",
+            "example": "False"
           },
-          "type": {
-            "$ref": "#/components/schemas/ResourceType"
+          "user": {
+            "$ref": "#/components/schemas/UserGet"
           },
           "resourceCategory": {
-            "$ref": "#/components/schemas/ResourceCategoryBase"
+            "$ref": "#/components/schemas/ResourceCategoryGet"
           }
         },
-        "additionalProperties": false,
-        "description": "GET-RELATED-Model for Resource."
+        "additionalProperties": false
       },
       "ResourceToTaskGet": {
         "type": "object",
@@ -16132,16 +16994,6 @@
         },
         "additionalProperties": false,
         "description": "POST-Model for ResourceToTask."
-      },
-      "ResourceType": {
-        "enum": [
-          "Personal",
-          "Machine",
-          "Room",
-          "Vehicle",
-          "Other"
-        ],
-        "type": "string"
       },
       "ResponsibleUsersBase": {
         "type": "object",
@@ -18181,38 +19033,6 @@
         },
         "additionalProperties": false
       },
-      "UserDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "completeName": {
-            "type": "string",
-            "nullable": true
-          },
-          "eMailWork": {
-            "type": "string",
-            "nullable": true
-          },
-          "financesChargeRateId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true,
-            "example": null
-          }
-        },
-        "additionalProperties": false
-      },
       "UserGet": {
         "type": "object",
         "properties": {
@@ -19112,15 +19932,19 @@
     },
     {
       "name": "PlannedCosts",
-      "description": "This controller handles all planned-cost related actions"
+      "description": "This controller handles all planned-cost related actions."
     },
     {
       "name": "PlannedRevenues",
-      "description": "This controller handles all planned-revenue related actions"
+      "description": "This controller handles all planned-revenue related actions."
     },
     {
       "name": "ProjectTemplates",
       "description": "This controller handles all project template related actions."
+    },
+    {
+      "name": "Resources",
+      "description": "This controller handles all resource-related actions."
     },
     {
       "name": "Users",
