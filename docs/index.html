@@ -132,6 +132,8 @@
 <li><code>read_all</code>: read access to all resources</li>
 <li><code>write_all</code>: write access to all resources</li>
 </ul>
+<p><strong>Attention:</strong> The scopes are currently not used. Every access token has read and write access to all resources in the defined subsystem.</p>
+</p>
 
 <h3 id="access-token">Access Token</h3>
 <p>The <code>Access Token</code> is used to authenticate API requests. It must be included in every API request. Each user has their own unique <code>Access Token</code>, which is only valid for that user and typically expires after a few days.</p>
@@ -431,6 +433,8 @@
     <h2>Authentication</h2>
     <p>To access the functions of the helloHQ API, authentication is mandatory. You need to authenticate using a valid access token, which verifies your identity and ensures you have the necessary permissions to access the requested resources.</p>
     <p>Currently, you can generate an <b>Access Token</b> within helloHQ for API use. In the future, we plan to implement an OAuth flow for authentication.</p>
+    <p><strong>Attention:</strong> The permissions of the user are not checked.
+         The access token is valid for all resources in the subsystem, regardless of the user's permissions.</p>
     <h3>Access Token</h3>
     <p>To obtain an access token, log into your helloHQ system. <br/>
     Under <b>Admin =&gt; Settings =&gt; API-Clients</b>, you can create and manage your access tokens.</p>
