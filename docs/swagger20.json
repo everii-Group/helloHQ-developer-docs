@@ -5344,6 +5344,7 @@
                   "status": "Planned",
                   "netValue": "1000.01",
                   "grossValue": "10500.07",
+                  "createdFromId": "999999",
                   "note": "Nicely planned for our monthly budget",
                   "interval": "Monthly",
                   "startDate": "2025-01-01T00:00:00",
@@ -5486,6 +5487,7 @@
                   "status": "Planned",
                   "netValue": "1000.01",
                   "grossValue": "10500.07",
+                  "createdFromId": "999999",
                   "note": "Nicely planned for our monthly budget",
                   "interval": "Monthly",
                   "startDate": "2025-01-01T00:00:00",
@@ -7613,6 +7615,138 @@
               }
             }
           }
+        },
+        "deprecated": true
+      }
+    },
+    "/v2/Services/{id}/Price/{priceId}": {
+      "put": {
+        "tags": [
+          "Services"
+        ],
+        "summary": "Updates a service price position for a service item.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the service item.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "priceId",
+            "in": "path",
+            "description": "The id of the price position of the service item.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The model containing updated details of the service price position.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicePricePut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicePricePut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicePricePut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "text": "-",
+                  "plainText": "-",
+                  "documentPositionType": 0,
+                  "documentTableId": "System.Guid",
+                  "amount1": 0,
+                  "amount2": 0,
+                  "unitId1": 0,
+                  "unitId2": 0,
+                  "cost": 0,
+                  "price": 0,
+                  "discountNet": 0,
+                  "discountPercent": 0,
+                  "marginNet": 0,
+                  "marginPercent": 0,
+                  "tax": 0,
+                  "totalCosts": 0,
+                  "totalNetValue": 0,
+                  "totalTaxValue": 0,
+                  "totalGrossValue": 0,
+                  "isExternal": true,
+                  "order": 0,
+                  "index": "-",
+                  "performancePeriodStartDate": "System.Nullable`1[System.DateTime]",
+                  "performancePeriodEndDate": "System.Nullable`1[System.DateTime]",
+                  "interval": 0,
+                  "isOptional": true,
+                  "excludeFromEarlyPayment": true,
+                  "isApproved": true,
+                  "approvedOn": "System.Nullable`1[System.DateTime]",
+                  "isFactorizable": true,
+                  "isHidden": true,
+                  "currency": "-",
+                  "documentEntityId": 0,
+                  "documentEntity": "HQ.SQL.Model.DocumentEntity",
+                  "parentDocumentPositionId": 0,
+                  "parentDocumentPosition": "HQ.SQL.Model.DocumentPositionEntity",
+                  "unit1": "HQ.SQL.Model.ArticleUnit",
+                  "unit2": "HQ.SQL.Model.ArticleUnit",
+                  "createdFromId": 0,
+                  "createdFrom": "HQ.SQL.Model.DocumentPositionEntity",
+                  "serviceItemId": 0,
+                  "serviceItem": "HQ.SQL.Model.ServiceItem",
+                  "financesCostCenter1Id": 0,
+                  "financesCostCenter1": "HQ.SQL.Model.FinancesCostCenter",
+                  "financesCostCenter2Id": 0,
+                  "financesCostCenter2": "HQ.SQL.Model.FinancesCostCenter",
+                  "financesBookingAccountId": 0,
+                  "financesBookingAccount": "HQ.SQL.Model.FinancesBookingAccount",
+                  "financesCostTypeId": 0,
+                  "financesCostType": "HQ.SQL.Model.FinancesCostType",
+                  "projectId": 0,
+                  "project": "HQ.SQL.Model.Project",
+                  "projectRoleId": 0,
+                  "projectRole": "HQ.SQL.Model.ProjectRole",
+                  "projectBudgedId": 0,
+                  "projectBudged": "HQ.SQL.Model.ProjectBudget",
+                  "taskTypeId": 0,
+                  "taskType": "HQ.SQL.Model.TaskType",
+                  "tariffId": 0,
+                  "tariff": "HQ.SQL.Model.Tariff",
+                  "customFieldContentId": 0,
+                  "customFieldContent": "HQ.SQL.Model.CustomFieldContent",
+                  "documentPositionEntityToEntities": "System.Collections.Generic.ICollection`1[HQ.SQL.Model.DocumentPositionEntityToEntity]",
+                  "id": 0,
+                  "createdOn": "System.DateTime",
+                  "createdBy": 0,
+                  "updatedOn": "System.DateTime",
+                  "updatedBy": 0,
+                  "deletedOn": "System.Nullable`1[System.DateTime]",
+                  "deletedBy": 0
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -8074,6 +8208,99 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UnitGet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/UserGroups": {
+      "get": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Retrieves all entities that have not been deleted.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroupGet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/UserGroups/{id}": {
+      "get": {
+        "tags": [
+          "UserGroups"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupGet"
                 }
               }
             }
@@ -8909,7 +9136,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "53309"
+            "example": "28391"
           },
           "start": {
             "type": "string",
@@ -8945,7 +9172,7 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "98864"
+            "example": "37836"
           },
           "id": {
             "type": "integer",
@@ -9151,7 +9378,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "90634"
+            "example": "71452"
           },
           "plainMessage": {
             "type": "string",
@@ -9212,7 +9439,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "29671"
+            "example": "34971"
           }
         },
         "additionalProperties": false
@@ -10368,7 +10595,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "35856"
+            "example": "64985"
           }
         },
         "additionalProperties": false,
@@ -11740,96 +11967,127 @@
         "properties": {
           "date": {
             "type": "string",
-            "format": "date-time"
+            "description": "The date the document was issued.",
+            "format": "date-time",
+            "example": "2026-09-04"
           },
           "validUntilDate": {
             "type": "string",
+            "description": "The date until which the document is valid.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-10-04"
           },
           "note": {
             "type": "string",
-            "nullable": true
+            "description": "The description of the document.",
+            "nullable": true,
+            "example": "This is a test document."
           },
           "discountNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute discount amount applied to the net total.",
+            "format": "double",
+            "example": "50.00"
           },
           "discountPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The discount applied to the net total as a percentage.",
+            "format": "double",
+            "example": "10.00"
           },
           "marginNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute margin amount on the net total.",
+            "format": "double",
+            "example": "120.00"
           },
           "marginPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The margin on the net total as a percentage.",
+            "format": "double",
+            "example": "25.00"
           },
           "taxOption": {
             "type": "string",
-            "nullable": true
+            "description": "The tax handling option for the document.",
+            "nullable": true,
+            "example": "VatApplicable"
           },
           "currency": {
             "type": "string",
-            "nullable": true
+            "description": "The ISO currency code used for the document.",
+            "nullable": true,
+            "example": "EUR"
           },
           "serviceType": {
             "type": "string",
-            "nullable": true
+            "description": "The type of service the document relates to.",
+            "nullable": true,
+            "example": "Service"
           },
           "performancePeriodStartDate": {
             "type": "string",
+            "description": "The start date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-01"
           },
           "performancePeriodEndDate": {
             "type": "string",
+            "description": "The end date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-30"
           },
           "deliveryConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated delivery condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "1"
           },
           "paymentConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated payment condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "2"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
+            "description": "The identifier of the customer's purchase order number.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "100"
           },
           "financesBankAccountId": {
             "type": "integer",
+            "description": "The identifier of the bank account used for finances.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "5"
           },
           "internalContactPersonId": {
             "type": "integer",
+            "description": "The identifier of the internal contact person responsible for the document.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "42"
           },
           "projectId": {
             "type": "integer",
+            "description": "The identifier of the associated project.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "7"
           },
           "leadId": {
             "type": "integer",
+            "description": "The identifier of the associated lead.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "3"
           },
           "id": {
             "type": "integer",
@@ -11999,96 +12257,127 @@
         "properties": {
           "date": {
             "type": "string",
-            "format": "date-time"
+            "description": "The date the document was issued.",
+            "format": "date-time",
+            "example": "2026-09-04"
           },
           "validUntilDate": {
             "type": "string",
+            "description": "The date until which the document is valid.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-10-04"
           },
           "note": {
             "type": "string",
-            "nullable": true
+            "description": "The description of the document.",
+            "nullable": true,
+            "example": "This is a test document."
           },
           "discountNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute discount amount applied to the net total.",
+            "format": "double",
+            "example": "50.00"
           },
           "discountPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The discount applied to the net total as a percentage.",
+            "format": "double",
+            "example": "10.00"
           },
           "marginNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute margin amount on the net total.",
+            "format": "double",
+            "example": "120.00"
           },
           "marginPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The margin on the net total as a percentage.",
+            "format": "double",
+            "example": "25.00"
           },
           "taxOption": {
             "type": "string",
-            "nullable": true
+            "description": "The tax handling option for the document.",
+            "nullable": true,
+            "example": "VatApplicable"
           },
           "currency": {
             "type": "string",
-            "nullable": true
+            "description": "The ISO currency code used for the document.",
+            "nullable": true,
+            "example": "EUR"
           },
           "serviceType": {
             "type": "string",
-            "nullable": true
+            "description": "The type of service the document relates to.",
+            "nullable": true,
+            "example": "Service"
           },
           "performancePeriodStartDate": {
             "type": "string",
+            "description": "The start date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-01"
           },
           "performancePeriodEndDate": {
             "type": "string",
+            "description": "The end date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-30"
           },
           "deliveryConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated delivery condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "1"
           },
           "paymentConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated payment condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "2"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
+            "description": "The identifier of the customer's purchase order number.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "100"
           },
           "financesBankAccountId": {
             "type": "integer",
+            "description": "The identifier of the bank account used for finances.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "5"
           },
           "internalContactPersonId": {
             "type": "integer",
+            "description": "The identifier of the internal contact person responsible for the document.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "42"
           },
           "projectId": {
             "type": "integer",
+            "description": "The identifier of the associated project.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "7"
           },
           "leadId": {
             "type": "integer",
+            "description": "The identifier of the associated lead.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "3"
           },
           "id": {
             "type": "integer",
@@ -13523,93 +13812,125 @@
         "properties": {
           "date": {
             "type": "string",
-            "format": "date-time"
+            "description": "The date the document was issued.",
+            "format": "date-time",
+            "example": "2026-09-04"
+          },
+          "note": {
+            "type": "string",
+            "description": "The description of the document.",
+            "nullable": true,
+            "example": "This is a test document."
           },
           "validUntilDate": {
             "type": "string",
-            "format": "date-time"
+            "description": "The date until which the document is valid.",
+            "format": "date-time",
+            "example": "2026-10-04"
           },
           "discountNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute discount amount applied to the net total.",
+            "format": "double",
+            "example": "50.00"
           },
           "discountPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The discount applied to the net total as a percentage.",
+            "format": "double",
+            "example": "10.00"
           },
           "marginNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute margin amount on the net total.",
+            "format": "double",
+            "example": "120.00"
           },
           "marginPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The margin on the net total as a percentage.",
+            "format": "double",
+            "example": "25.00"
           },
           "currency": {
             "minLength": 1,
             "type": "string",
+            "description": "The ISO currency code used for the document.",
             "example": "EUR"
           },
           "performancePeriodStartDate": {
             "type": "string",
-            "format": "date-time"
+            "description": "The start date of the performance period covered by the document.",
+            "format": "date-time",
+            "example": "2026-09-01"
           },
           "performancePeriodEndDate": {
             "type": "string",
-            "format": "date-time"
+            "description": "The end date of the performance period covered by the document.",
+            "format": "date-time",
+            "example": "2026-09-30"
           },
           "deliveryConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated delivery condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "1"
           },
           "paymentConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated payment condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "2"
           },
           "contactPersonId": {
             "type": "integer",
+            "description": "The identifier of the contact person for the document.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "15"
           },
           "companyId": {
             "type": "integer",
+            "description": "The identifier of the company the document belongs to.",
             "format": "int32",
-            "example": "34297"
+            "example": "8"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
+            "description": "The identifier of the customer's purchase order number.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "100"
           },
           "financesBankAccountId": {
             "type": "integer",
+            "description": "The identifier of the bank account used for finances.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "5"
           },
           "internalContactPersonId": {
             "type": "integer",
+            "description": "The identifier of the internal contact person responsible for the document.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "42"
           },
           "projectId": {
             "type": "integer",
+            "description": "The identifier of the associated project.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "7"
           },
           "leadId": {
             "type": "integer",
+            "description": "The identifier of the associated lead.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "3"
           },
           "documentType": {
             "minLength": 1,
@@ -13619,8 +13940,9 @@
           },
           "documentTemplateEntityId": {
             "type": "integer",
+            "description": "The identifier of the document template to use.",
             "format": "int32",
-            "example": "40267"
+            "example": "12"
           },
           "number": {
             "type": "string",
@@ -13636,96 +13958,127 @@
         "properties": {
           "date": {
             "type": "string",
-            "format": "date-time"
+            "description": "The date the document was issued.",
+            "format": "date-time",
+            "example": "2026-09-04"
           },
           "validUntilDate": {
             "type": "string",
+            "description": "The date until which the document is valid.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-10-04"
           },
           "note": {
             "type": "string",
-            "nullable": true
+            "description": "The description of the document.",
+            "nullable": true,
+            "example": "This is a test document."
           },
           "discountNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute discount amount applied to the net total.",
+            "format": "double",
+            "example": "50.00"
           },
           "discountPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The discount applied to the net total as a percentage.",
+            "format": "double",
+            "example": "10.00"
           },
           "marginNet": {
             "type": "number",
-            "format": "double"
+            "description": "The absolute margin amount on the net total.",
+            "format": "double",
+            "example": "120.00"
           },
           "marginPercent": {
             "type": "number",
-            "format": "double"
+            "description": "The margin on the net total as a percentage.",
+            "format": "double",
+            "example": "25.00"
           },
           "taxOption": {
             "type": "string",
-            "nullable": true
+            "description": "The tax handling option for the document.",
+            "nullable": true,
+            "example": "VatApplicable"
           },
           "currency": {
             "type": "string",
-            "nullable": true
+            "description": "The ISO currency code used for the document.",
+            "nullable": true,
+            "example": "EUR"
           },
           "serviceType": {
             "type": "string",
-            "nullable": true
+            "description": "The type of service the document relates to.",
+            "nullable": true,
+            "example": "Service"
           },
           "performancePeriodStartDate": {
             "type": "string",
+            "description": "The start date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-01"
           },
           "performancePeriodEndDate": {
             "type": "string",
+            "description": "The end date of the performance period covered by the document.",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-09-30"
           },
           "deliveryConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated delivery condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "1"
           },
           "paymentConditionId": {
             "type": "integer",
+            "description": "The identifier of the associated payment condition.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "2"
           },
           "companyPurchaseOrderNumberId": {
             "type": "integer",
+            "description": "The identifier of the customer's purchase order number.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "100"
           },
           "financesBankAccountId": {
             "type": "integer",
+            "description": "The identifier of the bank account used for finances.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "5"
           },
           "internalContactPersonId": {
             "type": "integer",
+            "description": "The identifier of the internal contact person responsible for the document.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "42"
           },
           "projectId": {
             "type": "integer",
+            "description": "The identifier of the associated project.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "7"
           },
           "leadId": {
             "type": "integer",
+            "description": "The identifier of the associated lead.",
             "format": "int32",
             "nullable": true,
-            "example": null
+            "example": "3"
           },
           "number": {
             "type": "string",
@@ -14566,7 +14919,8 @@
           "Calendar",
           "Contacts",
           "Files",
-          "APIClient"
+          "APIClient",
+          "IdProvider"
         ],
         "type": "string"
       },
@@ -15739,6 +16093,13 @@
             "description": "Gross value of this document",
             "format": "double"
           },
+          "createdFromId": {
+            "type": "integer",
+            "description": "ID of the source document this planned revenue was created from (e.g. the originating offer).\r\nIs null if the planned revenue was not created from another document.",
+            "format": "int32",
+            "nullable": true,
+            "example": "999999"
+          },
           "company": {
             "$ref": "#/components/schemas/CompanyGet"
           },
@@ -16011,7 +16372,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "60680"
+            "example": "24911"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16136,7 +16497,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "71813"
+            "example": "74294"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16527,7 +16888,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "91901"
+            "example": "20877"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16540,13 +16901,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "11460"
+            "example": "23499"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "90465"
+            "example": "24705"
           },
           "projectMembers": {
             "type": "array",
@@ -16605,7 +16966,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "96468"
+            "example": "26389"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16785,7 +17146,9 @@
           "Exchange",
           "Personio",
           "Jira",
+          "Okta",
           "HelloHQ",
+          "DATEV",
           "Others"
         ],
         "type": "string"
@@ -19945,6 +20308,10 @@
     {
       "name": "Resources",
       "description": "This controller handles all resource-related actions."
+    },
+    {
+      "name": "UserGroups",
+      "description": "This controller handles all user-group-related read actions."
     },
     {
       "name": "Users",
