@@ -38,7 +38,7 @@
 </a>
 <ul>
 <li class="dropdown">
-<a href="javascript:void(0)" id="api_v1">API v1</a>
+<a href="javascript:void(0)" id="api_v1">API v1 (Deprecated)</a>
 <div class="dropdown-content">
 <a href="#" onclick="scrollToHeadline('v1_auth')">Authentication</a>
 <a href="#" onclick="scrollToHeadline('v1_expand')">Expand</a>
@@ -84,7 +84,7 @@
         <h3>v1</h3>
         <p>The initial release of our API is based on the OData 4.0 standard, offering comprehensive access to most features of the helloHQ platform.<br />
            This version includes all entities available in helloHQ 1.9, ensuring broad compatibility and functionality.<br /><br />
-           <i>Note: This version does not support the new finance processes.</i>
+           <i>Note: This version does not support the new finance processes. It is considered deprecated. We will continue to maintain it for legacy purposes, but new development will focus on v2.</i>
         </p>
 
         <h3>v2</h3>
@@ -452,10 +452,58 @@
     <p>In helloHQ, you can choose between two types of access tokens: a sync token and a user-related token.</p>
     <h3>Sync Token</h3>
     <p>The sync token is utilized to access the API without a user context. It is used to synchronize data between helloHQ and your application.<br>
-    This means the token has access to all data within the system.</p>
+    This means the token has access to all data within the system. Permission checks are skipped entirely for sync tokens.</p>
     <h3>User Token</h3>
     <p>The user token provides access to the API within a user context. In this case, the token includes information about the user.<br>
     With this token, you will only retrieve data that the user has access to. Additionally, when data is created, it will be created in the subsystem to which the user belongs. This is particularly relevant if you are using subsystems in helloHQ.</p>
+
+    <h3>Permission-Aware Tokens (Token Version 2)</h3>
+    <p>User tokens created in helloHQ now carry a token version. Tokens of version 2 or higher are <strong>permission-aware</strong>: the API enforces the user's module-level permissions for every request.</p>
+    <p><strong>Legacy tokens (version 1)</strong> bypass permission checks and behave as before — they have read and write access to all resources. Older tokens continue to work unchanged.</p>
+
+    <h4>How Permissions Are Checked</h4>
+    <p>Each API endpoint is mapped to one or more <em>system modules</em>. When a permission-aware token is used, the API checks whether the token's user has sufficient rights in at least one of the required modules (<strong>OR semantics</strong>).</p>
+    <ul>
+        <li><strong>GET requests</strong> require <em>read</em> access to at least one of the endpoint's read modules.</li>
+        <li><strong>POST / PUT / PATCH / DELETE requests</strong> require <em>write</em> access to at least one of the endpoint's write modules.</li>
+    </ul>
+    <p>If the user lacks the necessary permissions, the API responds with <code>403 Forbidden</code>. The response message specifies exactly which modules and right-levels are required, and what the user's current level is:</p>
+    <div class="code-container">
+        <pre><code class="language-json">{
+  "message": "Access to this resource is forbidden. Needed rights: CompanyDetails (Write: 2). Your current permission level is 1."
+}</code></pre>
+    </div>
+
+    <h4>Own-Resource Exception</h4>
+    <p>Some endpoints allow a user to access <strong>their own resources</strong> even without the module permission that would otherwise be required for other users' data. For example, a user can always read and manage their own working times or absences, regardless of whether they have the <em>UserManagement</em> module permission.</p>
+
+    <h4>Entity-Delegated Permissions</h4>
+    <p>For entities that belong to a parent entity (e.g. document positions, document elements, files, or payments), the permission check is delegated to the parent entity. The required module is determined by the parent document or entity the item belongs to — not by a fixed module on the endpoint itself.</p>
+
+    <h4>Required Modules per Endpoint</h4>
+    <p>The table below is generated automatically from the API specification (<code>swagger20.json</code>).
+       Each entry reflects the <code>x-permissions</code> field that the API embeds in the OpenAPI spec via the
+       <code>RequiresPermissionAttribute</code> on every endpoint. The table updates whenever the spec is refreshed.</p>
+    <div id="permissions-loading" style="color:#888;font-style:italic;padding:8px 0;">Loading permissions from API spec…</div>
+    <div id="permissions-table-container" style="display:none;">
+        <div class="table-wrapper">
+            <table id="permissions-table">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Read Modules (OR)</th>
+                        <th>Write Modules (OR)</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="permissions-table-body"></tbody>
+            </table>
+        </div>
+        <p><em>Module names match the helloHQ administration panel's module configuration.
+           Endpoints without an <code>x-permissions</code> field are either technical endpoints
+           (login, health checks) or legacy endpoints not yet covered by the permission mapping.</em></p>
+    </div>
 </div>
 
 <div class="content" id="v2_expand">
@@ -716,7 +764,93 @@ filter=name eq 'hello &amp; hq'   &lt;- incorrect</code></pre>
         })
 
         // window.ui = ui
+
+        loadPermissionsTable();
     }
+
+    function loadPermissionsTable() {
+        fetch("swagger20.json")
+            .then(function(r) { return r.json(); })
+            .then(function(spec) { buildPermissionsTable(spec); })
+            .catch(function() {
+                var el = document.getElementById("permissions-loading");
+                if (el) el.textContent = "Could not load permissions from API spec.";
+            });
+    }
+
+    function buildPermissionsTable(spec) {
+        var rows = collectPermissionRows(spec);
+
+        var tbody = document.getElementById("permissions-table-body");
+        if (!tbody) return;
+
+        rows.forEach(function(row) {
+            var tr = document.createElement("tr");
+
+            var tdPath = document.createElement("td");
+            var code = document.createElement("code");
+            code.textContent = row.path;
+            tdPath.appendChild(code);
+            tr.appendChild(tdPath);
+
+            var tdMethod = document.createElement("td");
+            tdMethod.innerHTML = '<span class="http-method">' + row.method.toUpperCase() + '</span>';
+            tr.appendChild(tdMethod);
+
+            var tdRead = document.createElement("td");
+            tdRead.textContent = row.delegated ? "Delegated to parent entity" : (row.read.length > 0 ? row.read.join(", ") : "—");
+            tr.appendChild(tdRead);
+
+            var tdWrite = document.createElement("td");
+            tdWrite.textContent = row.delegated ? "Delegated to parent entity" : (row.write.length > 0 ? row.write.join(", ") : "—");
+            tr.appendChild(tdWrite);
+
+            var tdNotes = document.createElement("td");
+            var notes = [];
+            if (row.delegated) notes.push("Permission inherited from parent entity");
+            if (row.allowOwnResource) notes.push("Own resource always accessible");
+            tdNotes.textContent = notes.join("; ");
+            tr.appendChild(tdNotes);
+
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("permissions-loading").style.display = "none";
+        document.getElementById("permissions-table-container").style.display = "";
+    }
+
+    function collectPermissionRows(spec) {
+        var seen = {};
+        var rows = [];
+
+        if (!spec || !spec.paths) return rows;
+
+        Object.keys(spec.paths).sort().forEach(function(path) {
+            var pathItem = spec.paths[path];
+            ["get", "post", "put", "patch", "delete"].forEach(function(method) {
+                var op = pathItem[method];
+                if (!op) return;
+                var perm = op["x-permissions"];
+                if (!perm) return;
+
+                var read = perm.read || [];
+                var write = perm.write || [];
+                var delegated = perm.delegatesToRelatedEntity === true;
+                var allowOwn = perm.allowOwnResource === true;
+
+                // De-duplicate: if read+write+delegated+allowOwn are identical for the same path,
+                // collapse into one row (e.g. GET and POST on the same controller with same mapping).
+                var key = path + "|" + JSON.stringify(read) + "|" + JSON.stringify(write) + "|" + delegated + "|" + allowOwn;
+                if (seen[key]) return;
+                seen[key] = true;
+
+                rows.push({ path: path, method: method, read: read, write: write, delegated: delegated, allowOwnResource: allowOwn });
+            });
+        });
+
+        return rows;
+    }
+
 
     function copyToClipboard(container) {
         // Find the nearest <code> block related to the clicked button
