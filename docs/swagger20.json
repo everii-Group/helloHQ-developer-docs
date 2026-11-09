@@ -11,7 +11,7 @@
           "Absences"
         ],
         "summary": "Creates a new absence.",
-        "description": "You can create an absence by providing the absence details in the request body.\n\n<b>Additional Information:</b>\n\r\n- Start and end dates are required, but their usage depends on the type of absence.\n\r\n- For hour-based absences such as <i>CompanyAbsence</i> and <i>PrivateAbsence</i>, specify UTC-based times for both start and end dates.\n\r\n  Example: <i>\"2023-11-14T06:00:00Z\"</i>\n\n\r\n- For all other absences (day or half-day based), set the start and end dates like so:\n\r\n- Full day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T00:00:00\"</i>\n\r\n- Half-day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T12:00:00\"</i>\n\n<b>Supported Full Day and Half Day Absence Types:</b>\n\r\n- Vacation\n\r\n- SpecialLeave\n\r\n- VacationUnpaid\n\r\n- OvertimeCompensation\n\r\n- RemoteWork\n\r\n- ChildSick\n\r\n- SickLeave",
+        "description": "You can create an absence by providing the absence details in the request body.\n\n<b>Additional Information:</b>\n\r\n- Start and end dates are required, but their usage depends on the type of absence.\n\r\n- For hour-based absences such as <i>CompanyAbsence</i> and <i>PrivateAbsence</i>, specify UTC-based times for both start and end dates.\n\r\n  Example: <i>\"2023-11-14T06:00:00Z\"</i>\n\n\r\n- For all other absences (day or half-day based), set the start and end dates like so:\n\r\n- Full day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T00:00:00\"</i>\n\r\n- Half-day absence: <i>Start: \"2023-11-03T00:00:00\", End: \"2023-11-04T12:00:00\"</i>\n\n<b>Supported Full Day and Half Day Absence Types:</b>\n\r\n- Vacation\n\r\n- SpecialLeave\n\r\n- VacationUnpaid\n\r\n- OvertimeCompensation\n\r\n- RemoteWork\n\r\n- ChildSick\n\r\n- SickLeave\r\n            \r\n\n\n\r\nAdditional SyncId Information:\n\r\nIf the SyncId is provided, the API will check if an absence with the same SyncId already exists.\r\nIf it does, the existing absence will be updated with the new details instead of creating a new one.\r\nThis allows for idempotent operations when integrating with external systems that may send duplicate requests.",
         "requestBody": {
           "description": "The absence details to be created.",
           "content": {
@@ -51,11 +51,22 @@
                   "type": "Vacation",
                   "note": "I am on vacation",
                   "isApproved": true,
-                  "userId": 0
+                  "userId": 0,
+                  "syncId": "-"
                 }
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -114,6 +125,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -123,6 +144,7 @@
           "Absences"
         ],
         "summary": "Deletes the absence with a specific ID.",
+        "description": "**Required permissions**\nRead: `UserManagement`\nWrite: `UserManagement`\n*Own resource is always accessible without module permission.*",
         "parameters": [
           {
             "name": "id",
@@ -139,6 +161,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -170,6 +202,188 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/Absences/BySyncId/{provider}/{syncId}": {
+      "put": {
+        "tags": [
+          "Absences"
+        ],
+        "summary": "Creates or updates the absence with a specific sync id of an integration.",
+        "description": "Same body and rules as `POST /Absences`. If an absence with this sync id exists, it is updated, otherwise it is created.\n\r\nA sync id in the body must match the sync id in the route.\n\r\nThe user of an existing absence is not changed.\n\r\nThe absence is linked to the integration, so only this integration can delete or reconcile it.",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "description": "The integration the absence belongs to, e.g. `Personio`.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Provider"
+            }
+          },
+          {
+            "name": "syncId",
+            "in": "path",
+            "description": "The external sync id of the absence.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The absence details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencePost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencePost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 0,
+                  "createdOn": "System.DateTime",
+                  "createdBy": 0,
+                  "updatedOn": "System.DateTime",
+                  "updatedBy": 0,
+                  "startOn": "2023-12-24T14:23:55.234Z",
+                  "startDate": "2023-12-24T00:00:00",
+                  "endOn": "2023-12-24T23:23:55.234Z",
+                  "endDate": "2023-12-25T00:00:00",
+                  "missedDays": "5",
+                  "type": "Vacation",
+                  "note": "I am on vacation",
+                  "isApproved": true,
+                  "userId": 0,
+                  "syncId": "-"
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      },
+      "delete": {
+        "tags": [
+          "Absences"
+        ],
+        "summary": "Deletes the absence with a specific sync id of an integration.",
+        "description": "**Required permissions**\nRead: *no read access*\nWrite: `UserManagement`",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "description": "The integration the absence belongs to, e.g. `Personio`.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Provider"
+            }
+          },
+          {
+            "name": "syncId",
+            "in": "path",
+            "description": "The external sync id of the absence.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/Absences/Reconcile": {
+      "post": {
+        "tags": [
+          "Absences"
+        ],
+        "summary": "Deletes synced absences that no longer exist in the source system.",
+        "description": "Only absences linked to the integration of `provider` whose start date lies in the window (both bounds inclusive) are considered.\r\nOf these, all absences whose sync id is not in `syncIds` are deleted. Nothing is created or changed.\n\n\r\n- <b>400</b>: `syncIds` is empty although absences exist in the window, or the window is invalid. Nothing is deleted.\n\r\n- <b>409</b>: More candidates than `maxDeletions`. Nothing is deleted, `deleted` contains the candidates.\n\r\n- With `dryRun`, `deleted` contains the candidates, but nothing is deleted.\n\n\r\nHourly absences are only considered up to the day before `to`, because their start is stored in UTC.",
+        "requestBody": {
+          "description": "The window and the complete list of sync ids that exist in the source system.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencesReconcilePost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencesReconcilePost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AbsencesReconcilePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbsencesReconcileResult"
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -272,6 +486,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -305,6 +533,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -365,6 +607,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -431,6 +683,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -503,6 +765,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -510,6 +782,7 @@
           "Companies"
         ],
         "summary": "Deletes the entity with a specified ID.",
+        "description": "**Required permissions**\nRead: `CompanyDetails`\nWrite: `CompanyDetails`",
         "parameters": [
           {
             "name": "id",
@@ -526,6 +799,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -565,6 +848,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -616,6 +909,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -697,6 +1000,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -772,6 +1085,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -781,6 +1104,7 @@
           "Companies"
         ],
         "summary": "Returns all custom field definitions for companies.",
+        "description": "**Required permissions**\nRead: `CompanyDetails`\nWrite: `CompanyDetails`",
         "responses": {
           "200": {
             "description": "OK",
@@ -796,6 +1120,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -866,6 +1200,24 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -922,6 +1274,24 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -958,6 +1328,24 @@
           "204": {
             "description": "No Content"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1028,6 +1416,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1084,6 +1484,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1120,6 +1532,18 @@
           "204": {
             "description": "No Content"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1180,6 +1604,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1213,6 +1648,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1273,6 +1719,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1306,6 +1763,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1340,6 +1808,17 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyContactHistory",
+            "ControllingContactHistory"
+          ],
+          "write": [
+            "CompanyContactHistory"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -1406,6 +1885,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyContactHistory",
+            "ControllingContactHistory"
+          ],
+          "write": [
+            "CompanyContactHistory"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1452,6 +1942,17 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyContactHistory",
+            "ControllingContactHistory"
+          ],
+          "write": [
+            "CompanyContactHistory"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -1459,6 +1960,7 @@
           "ContactHistories"
         ],
         "summary": "Deletes the contact history associated with the specified id.\r\nWhen channel of contact history is \"Task\" the associated tasks will be deleted as well.",
+        "description": "**Required permissions**\nRead: `CompanyContactHistory`, `ControllingContactHistory`\nWrite: `CompanyContactHistory`",
         "parameters": [
           {
             "name": "id",
@@ -1475,6 +1977,17 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyContactHistory",
+            "ControllingContactHistory"
+          ],
+          "write": [
+            "CompanyContactHistory"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -1514,6 +2027,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyContactHistory",
+            "ControllingContactHistory"
+          ],
+          "write": [
+            "CompanyContactHistory"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1577,6 +2101,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -1643,6 +2177,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1718,6 +2262,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -1725,6 +2279,7 @@
           "ContactPersons"
         ],
         "summary": "Deletes the entity with a specified ID.",
+        "description": "**Required permissions**\nRead: `CompanyDetails`\nWrite: `CompanyDetails`",
         "parameters": [
           {
             "name": "id",
@@ -1741,6 +2296,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -1780,6 +2345,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "CompanyDetails"
+          ],
+          "write": [
+            "CompanyDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1840,6 +2415,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1873,6 +2460,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1933,6 +2532,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -1966,6 +2577,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -2026,6 +2649,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -2059,6 +2692,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -2119,6 +2762,22 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings",
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -2152,6 +2811,22 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings",
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -2192,6 +2867,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2239,6 +2920,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "delete": {
@@ -2272,6 +2959,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2330,6 +3023,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2397,6 +3096,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2455,6 +3160,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2522,6 +3233,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2580,6 +3297,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2647,6 +3370,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2705,6 +3434,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2772,6 +3507,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2806,6 +3547,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2840,6 +3587,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2874,6 +3627,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2908,6 +3667,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2942,6 +3707,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -2988,6 +3759,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3034,6 +3811,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "delete": {
@@ -3041,6 +3824,7 @@
           "DocumentPositions"
         ],
         "summary": "Deletes the entity associated with the specified id.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
         "parameters": [
           {
             "name": "id",
@@ -3057,6 +3841,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "get": {
@@ -3088,6 +3878,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3148,6 +3944,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3174,6 +3976,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "post": {
@@ -3217,6 +4025,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3226,6 +4040,7 @@
           "Documents"
         ],
         "summary": "Deletes the comment of a document.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
         "parameters": [
           {
             "name": "id",
@@ -3252,6 +4067,149 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
+        }
+      }
+    },
+    "/v2/Documents/{id}": {
+      "delete": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Deletes the document with the specified ID.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the document to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
+        }
+      },
+      "put": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Updates an existing document.",
+        "description": "To update a document, provide the document ID in the URL and the updated document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number.\n\n\r\n            \r\nThe properties `companyId`, `contactPersonId` are obsolete and will be removed in the future.\r\nPlease use the `SetCompanyData` endpoint instead.\r\n</p></p>",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the document to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Data to update the document.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentPut"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentPut"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentPut"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
+        }
+      },
+      "get": {
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Retrieves the entity with the specified id",
+        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the entity to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Positions<br>Attachments<br>Positions,Attachments",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentGetRelated"
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -3260,7 +4218,6 @@
         "tags": [
           "Documents"
         ],
-        "summary": "Creates a new document.",
         "description": "To create a document, provide the document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number. \n\n</p></p>",
         "requestBody": {
           "description": "Data for the new document.",
@@ -3286,6 +4243,22 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -3352,114 +4325,22 @@
               }
             }
           }
-        }
-      }
-    },
-    "/v2/Documents/{id}": {
-      "put": {
-        "tags": [
-          "Documents"
-        ],
-        "summary": "Updates an existing document.",
-        "description": "To update a document, provide the document ID in the URL and the updated document data in the request body.\r\n<p><b>Additional Information:</b><p>\r\nThe document number can only be set for incoming invoices and only if the document\r\ntemplate of the incoming invoice do not use a number schema.\r\nFor all other documents, the helloHQ is responsible for setting the document number.\n\n\r\n            \r\nThe properties `companyId`, `contactPersonId` are obsolete and will be removed in the future.\r\nPlease use the `SetCompanyData` endpoint instead.\r\n</p></p>",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The ID of the document to update.",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Data to update the document.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DocumentPut"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DocumentPut"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DocumentPut"
-              }
-            }
-          }
         },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Documents"
-        ],
-        "summary": "Deletes the entity with a specified ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The ID of the entity to delete.",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Documents"
-        ],
-        "summary": "Retrieves the entity with the specified id",
-        "description": "To retrieve an entity, provide the entity's ID in the URL. The entity will be retrieved provided it has not been deleted.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "The ID of the entity to retrieve",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "expand",
-            "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Positions<br>Attachments<br>Positions,Attachments",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DocumentGetRelated"
-                }
-              }
-            }
-          }
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -3469,6 +4350,7 @@
           "Documents"
         ],
         "summary": "Retrieves all positions associated with the specified document.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
         "parameters": [
           {
             "name": "id",
@@ -3485,6 +4367,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3531,6 +4419,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3577,6 +4471,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3623,6 +4523,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3632,6 +4538,7 @@
           "Documents"
         ],
         "summary": "Copies an existing document without changing the document type.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
         "parameters": [
           {
             "name": "id",
@@ -3648,6 +4555,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3694,6 +4607,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3767,6 +4686,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3850,6 +4775,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3903,6 +4834,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -3912,6 +4849,7 @@
           "DocumentStatus"
         ],
         "summary": "Deletes the entity with a specified ID.",
+        "description": "**Required permissions**\nRead: `DocumentSettings`, `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`\nWrite: `DocumentSettings`",
         "parameters": [
           {
             "name": "id",
@@ -3928,6 +4866,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -3959,6 +4911,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4019,6 +4985,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4028,6 +5008,7 @@
           "DocumentTemplates"
         ],
         "summary": "Deletes the entity with a specified ID.",
+        "description": "**Required permissions**\nRead: `DocumentTemplates`, `DocumentSettings`, `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`\nWrite: `DocumentTemplates`, `DocumentSettings`",
         "parameters": [
           {
             "name": "id",
@@ -4044,6 +5025,22 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentTemplates",
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentTemplates",
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -4075,6 +5072,22 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentTemplates",
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentTemplates",
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4135,10 +5148,98 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentTemplates",
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "DocumentTemplates",
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
     "/v2/Files": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Retrieves all files, restricted to the ones the caller is allowed to read.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-00T00:00:00Z'<br>ATTENTION: The property Relations is not available for filtering.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>example:</b> Relations",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
+        }
+      },
       "post": {
         "tags": [
           "Files"
@@ -4244,72 +5345,12 @@
               }
             }
           }
-        }
-      },
-      "get": {
-        "tags": [
-          "Files"
-        ],
-        "summary": "Retrieves all entities that have not been deleted.",
-        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
-        "parameters": [
-          {
-            "name": "$filter",
-            "in": "query",
-            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-00T00:00:00Z'<br>ATTENTION: The property Relations is not available for filtering.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "$skip",
-            "in": "query",
-            "description": "example: 0",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "$top",
-            "in": "query",
-            "description": "example: 10",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "expand",
-            "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>example:</b> Relations",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileGetRelated"
-                  }
-                }
-              }
-            }
-          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -4382,6 +5423,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "delete": {
@@ -4389,6 +5436,7 @@
           "Files"
         ],
         "summary": "Deletes file and its related FileToEntity records, given the file's id.",
+        "description": "**Required permissions**\nDelegated to parent entity (document, company, lead, etc.)",
         "parameters": [
           {
             "name": "id",
@@ -4405,6 +5453,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       },
       "get": {
@@ -4444,6 +5498,12 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -4470,6 +5530,12 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": true
         }
       }
     },
@@ -4525,6 +5591,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -4591,6 +5669,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4658,6 +5748,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -4665,6 +5767,7 @@
           "Leads"
         ],
         "summary": "Deletes the lead associated with the specified id.",
+        "description": "**Required permissions**\nRead: `LeadsOverview`, `LeadsPipeline`\nWrite: `LeadsOverview`, `LeadsPipeline`",
         "parameters": [
           {
             "name": "id",
@@ -4681,6 +5784,18 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -4720,6 +5835,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4760,6 +5887,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "post": {
@@ -4818,6 +5957,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "write": [
+            "LeadsOverview",
+            "LeadsPipeline"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4878,6 +6029,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4911,6 +6074,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "LeadsOverview",
+            "LeadsPipeline",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -4971,6 +6146,24 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminSysSettings",
+            "AdminMasterData",
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminSysSettings",
+            "AdminMasterData",
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5004,73 +6197,33 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminSysSettings",
+            "AdminMasterData",
+            "DocumentSettings",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminSysSettings",
+            "AdminMasterData",
+            "DocumentSettings"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
     "/v2/PlannedCosts": {
-      "post": {
-        "tags": [
-          "PlannedCosts"
-        ],
-        "summary": "Creates a new planned cost.",
-        "description": "You can create a planned cost by providing the PlannedCostPost-Model in the request body.\r\n\n\r\nThe `companyId` must be set.\r\n\n\r\nThe values like netTotal, grossTotal, etc. are calculated when positions are added or updated\r\nvia the position endpoints, v2/DocumentPositions/FreeTextPosition for example.\r\n\n\r\nEstimations are calculated automatically based on the provided values.\r\n\n\n\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
-        "requestBody": {
-          "description": "PlannedCostPost-Model",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlannedCostPost"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlannedCostPost"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlannedCostPost"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": "3543",
-                  "createdOn": "2024-10-30T15:42:32.290Z",
-                  "createdBy": "4",
-                  "updatedOn": "2024-10-30T15:42:32.290Z",
-                  "updatedBy": "4",
-                  "status": "Planned",
-                  "note": "Nicely planned for our monthly budget",
-                  "interval": "Monthly",
-                  "startDate": "2025-01-01T00:00:00",
-                  "dueDate": "2025-12-31T00:00:00",
-                  "dueMonth": "6",
-                  "dueDay": "10",
-                  "performancePeriodType": "DueDateMonth",
-                  "invoiceDateType": "InvoiceCreation",
-                  "currency": "EUR",
-                  "marginPercent": "0.03",
-                  "discountPercent": "0.01",
-                  "companyId": "119",
-                  "leadId": "422",
-                  "projectId": "395"
-                }
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "PlannedCosts"
         ],
-        "summary": "Retrieves all entities that have not been deleted.",
+        "summary": "Retrieves all planned costs, restricted to the ones the caller is allowed to read.",
         "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
         "parameters": [
           {
@@ -5130,6 +6283,84 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      },
+      "post": {
+        "tags": [
+          "PlannedCosts"
+        ],
+        "summary": "Creates a new planned cost.",
+        "description": "You can create a planned cost by providing the PlannedCostPost-Model in the request body.\r\n\n\r\nThe `companyId` must be set.\r\n\n\r\nThe values like netTotal, grossTotal, etc. are calculated when positions are added or updated\r\nvia the position endpoints, v2/DocumentPositions/FreeTextPosition for example.\r\n\n\r\nEstimations are calculated automatically based on the provided values.\r\n\n\n\r\n- DueDateMonth: The month due date of the document is planned for\r\n- MonthBeforeDueDate: The month before the due date of the document is planned for\r\n- DueDateYear: The year due date of the document is planned for (used for the interval annually)\r\n- YearBeforeDueDate: The year before the due date of the document is planned for (used for the interval annually)",
+        "requestBody": {
+          "description": "PlannedCostPost-Model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedCostPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3543",
+                  "createdOn": "2024-10-30T15:42:32.290Z",
+                  "createdBy": "4",
+                  "updatedOn": "2024-10-30T15:42:32.290Z",
+                  "updatedBy": "4",
+                  "status": "Planned",
+                  "note": "Nicely planned for our monthly budget",
+                  "interval": "Monthly",
+                  "startDate": "2025-01-01T00:00:00",
+                  "dueDate": "2025-12-31T00:00:00",
+                  "dueMonth": "6",
+                  "dueDay": "10",
+                  "performancePeriodType": "DueDateMonth",
+                  "invoiceDateType": "InvoiceCreation",
+                  "currency": "EUR",
+                  "marginPercent": "0.03",
+                  "discountPercent": "0.01",
+                  "companyId": "119",
+                  "leadId": "422",
+                  "projectId": "395"
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5202,6 +6433,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -5209,6 +6450,7 @@
           "PlannedCosts"
         ],
         "summary": "Deletes the planned cost associated with the specified id.",
+        "description": "**Required permissions**\nRead: `DocumentCashFlowProject`\nWrite: `DocumentCashFlowProject`",
         "parameters": [
           {
             "name": "id",
@@ -5225,6 +6467,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -5264,6 +6516,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5299,10 +6561,96 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
     "/v2/PlannedRevenues": {
+      "get": {
+        "tags": [
+          "PlannedRevenues"
+        ],
+        "summary": "Retrieves all planned revenues, restricted to the ones the caller is allowed to read.",
+        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company<br>Lead,Project,Positions",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlannedRevenueGetRelated"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      },
       "post": {
         "tags": [
           "PlannedRevenues"
@@ -5364,72 +6712,16 @@
               }
             }
           }
-        }
-      },
-      "get": {
-        "tags": [
-          "PlannedRevenues"
-        ],
-        "summary": "Retrieves all entities that have not been deleted.",
-        "description": "Only entities that have not been deleted will be retrieved. You can refine the results further by applying filters.",
-        "parameters": [
-          {
-            "name": "$filter",
-            "in": "query",
-            "description": "<b>examples: </b><br>createdBy eq 1005<br>createdBy ne 1005<br>updatedOn gt datetime'2024-01-31T23:59:59Z'<br>createdOn ge datetime'2024-02-01T00:00:00Z'",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "$skip",
-            "in": "query",
-            "description": "example: 0",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "$top",
-            "in": "query",
-            "description": "example: 10",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "orderby",
-            "in": "query",
-            "description": "<b>examples: </b><br>id<br>createdOn,id<br>id desc<br>updatedOn desc,id",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "expand",
-            "in": "query",
-            "description": "Use 'expand' to include related entities.<br><b>examples: </b><br>Company<br>Lead,Project,Positions",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PlannedRevenueGetRelated"
-                  }
-                }
-              }
-            }
-          }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5507,6 +6799,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -5514,6 +6816,7 @@
           "PlannedRevenues"
         ],
         "summary": "Deletes the planned revenue associated with the specified id.",
+        "description": "**Required permissions**\nRead: `DocumentCashFlowProject`\nWrite: `DocumentCashFlowProject`",
         "parameters": [
           {
             "name": "id",
@@ -5530,6 +6833,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -5569,6 +6882,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5604,6 +6927,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentCashFlowProject"
+          ],
+          "write": [
+            "DocumentCashFlowProject"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5612,6 +6945,7 @@
         "tags": [
           "Projects"
         ],
+        "description": "**Required permissions**\nRead: `ProjectDetails`\nWrite: `ProjectDetails`",
         "parameters": [
           {
             "name": "expand",
@@ -5670,6 +7004,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "post": {
@@ -5737,6 +7081,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5745,6 +7099,7 @@
         "tags": [
           "Projects"
         ],
+        "description": "**Required permissions**\nRead: `ProjectDetails`\nWrite: `ProjectDetails`",
         "parameters": [
           {
             "name": "id",
@@ -5775,6 +7130,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "put": {
@@ -5854,6 +7219,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5863,6 +7238,7 @@
           "Projects"
         ],
         "summary": "Returns all project related custom field definitions that have not been deleted.",
+        "description": "**Required permissions**\nRead: `ProjectDetails`\nWrite: *no write access*",
         "responses": {
           "200": {
             "description": "OK",
@@ -5878,6 +7254,14 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [ ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -5959,6 +7343,14 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6027,6 +7419,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6105,6 +7507,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "post": {
@@ -6156,6 +7568,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6229,6 +7651,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -6263,6 +7695,16 @@
           "204": {
             "description": "No Content"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails"
+          ],
+          "write": [
+            "ProjectDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6331,6 +7773,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6409,6 +7863,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "post": {
@@ -6416,7 +7882,7 @@
           "Projects"
         ],
         "summary": "Adds a new task to the specified project.",
-        "description": "To add a task, provide the project ID in the URL and the task data in the request body.",
+        "description": "<p>To add a task, provide the project ID in the URL and the task data in the request body.</p>\r\n<p>\r\n  <i>SyncId</i>: Must be unique across all tasks. If another task already uses it, the request is rejected with 409 Conflict.</p>",
         "parameters": [
           {
             "name": "projectId",
@@ -6459,7 +7925,29 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6469,7 +7957,7 @@
           "Projects"
         ],
         "summary": "Updates an existing task associated with a project.",
-        "description": "To update a task, provide the project ID and task ID in the URL, and the updated task data in the request body.",
+        "description": "<p>To update a task, provide the project ID and task ID in the URL, and the updated task data in the request body.</p>\r\n<p>\r\n  <i>SyncId</i>: Must be unique across all tasks. If another task already uses it, the request is rejected with 409 Conflict.</p>\r\n<p>\r\n  <i>SyncId, AworkSyncId, ShouldBeSynced, JiraProjectName</i>: If omitted or null, they remain unchanged.\r\n            An existing SyncId or AworkSyncId cannot be removed via the API.</p>",
         "parameters": [
           {
             "name": "projectId",
@@ -6522,7 +8010,29 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -6557,6 +8067,18 @@
           "204": {
             "description": "No Content"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6590,6 +8112,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6633,6 +8167,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6676,6 +8222,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6739,6 +8297,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6748,7 +8318,7 @@
           "Projects"
         ],
         "summary": "Assigns resources to a project task.",
-        "description": "To assign resources to a task, provide the project ID and task ID in the URL, and the list of assignments in the request body.\r\nThe assignments will be added to already existing assignments.",
+        "description": "To assign resources to a task, provide the project ID and task ID in the URL, and the list of assignments in the request body.\r\nIf a resource is already assigned to the task, its assignment value and unit are updated instead of creating a second assignment.\r\nEach resource may only appear once per request.",
         "parameters": [
           {
             "name": "projectId",
@@ -6814,6 +8384,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6891,6 +8473,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "write": [
+            "ControllingTasks",
+            "ProjectPlan"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6951,6 +8545,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -6984,6 +8589,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7044,6 +8660,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7077,6 +8704,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "ProjectDetails",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7145,6 +8783,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7186,6 +8834,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7195,6 +8853,7 @@
           "Services"
         ],
         "summary": "Retrieves all service items.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "$filter",
@@ -7245,6 +8904,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "post": {
@@ -7277,6 +8950,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7286,6 +8973,7 @@
           "Services"
         ],
         "summary": "Retrieves a service item.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "id",
@@ -7309,6 +8997,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "put": {
@@ -7352,6 +9054,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -7359,6 +9075,7 @@
           "Services"
         ],
         "summary": "Deletes entity with a specific id.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "id",
@@ -7375,6 +9092,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7384,6 +9115,7 @@
           "Services"
         ],
         "summary": "Creates a new service price position for a service item.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "id",
@@ -7496,6 +9228,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "put": {
@@ -7503,6 +9249,7 @@
           "Services"
         ],
         "summary": "Updates a service price position for a service item.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "id",
@@ -7616,7 +9363,21 @@
             }
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
       }
     },
     "/v2/Services/{id}/Price/{priceId}": {
@@ -7625,6 +9386,7 @@
           "Services"
         ],
         "summary": "Updates a service price position for a service item.",
+        "description": "**Required permissions**\nRead: `DocumentInvoices`, `DocumentIncomingInvoices`, `DocumentQuotations`, `DocumentOrders`, `AdminMasterData`\nWrite: `AdminMasterData`",
         "parameters": [
           {
             "name": "id",
@@ -7747,6 +9509,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders",
+            "AdminMasterData"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7807,6 +9583,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails",
+            "ProjectDetails"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7840,6 +9628,18 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails",
+            "ProjectDetails"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7900,6 +9700,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7933,6 +9748,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "CompanyDetails",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -7993,6 +9823,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "ProjectPlan",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8026,6 +9871,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "ProjectPlan",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8086,6 +9946,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "ProjectPlan",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8119,6 +9994,21 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "ProjectPlan",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8179,6 +10069,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8212,6 +10116,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminMasterData",
+            "DocumentInvoices",
+            "DocumentIncomingInvoices",
+            "DocumentQuotations",
+            "DocumentOrders"
+          ],
+          "write": [
+            "AdminMasterData"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8272,6 +10190,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminGroupManagement"
+          ],
+          "write": [
+            "AdminGroupManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8305,6 +10233,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "AdminGroupManagement"
+          ],
+          "write": [
+            "AdminGroupManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8339,6 +10277,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -8397,6 +10349,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8456,6 +10422,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -8463,6 +10443,7 @@
           "UserReportings"
         ],
         "summary": "Deletes the user reporting with a specific ID.",
+        "description": "**Required permissions**\nRead: `MyUserReportings`, `ProjectUserReportings`, `ControllingReporting`\nWrite: `MyUserReportings`, `ProjectUserReportings`, `ControllingReporting`",
         "parameters": [
           {
             "name": "id",
@@ -8479,6 +10460,20 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -8510,6 +10505,20 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8546,6 +10555,65 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "write": [
+            "MyUserReportings",
+            "ProjectUserReportings",
+            "ControllingReporting"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/UserReportings/{id}/ChangeUser/{userId}": {
+      "put": {
+        "tags": [
+          "UserReportings"
+        ],
+        "summary": "Changes the user of an existing user reporting.",
+        "description": "The charge rates are recalculated for the new user and the reporting must not overlap with other reportings of the new user.\r\nA linked working time moves to the new user when working times are created together with reportings, otherwise it is unlinked.\r\nUser reportings synchronized with awork cannot be changed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of user reporting",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The ID of the new user",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "ProjectUserReportings",
+            "ProjectReportingsGlobal"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8602,6 +10670,8 @@
                   "employeeNumber": "123123",
                   "isDeactivated": "False",
                   "department": "HR",
+                  "timezoneId": "-",
+                  "timeZone": "Europe/Berlin",
                   "firstName": "John",
                   "lastName": "Doe",
                   "eMailPrivate": "john.doe@address.com",
@@ -8610,6 +10680,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserDetails"
+          ],
+          "write": [
+            "UserOverview",
+            "UserDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -8641,6 +10722,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserDetails"
+          ],
+          "write": [
+            "UserOverview",
+            "UserDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8667,6 +10759,17 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserDetails"
+          ],
+          "write": [
+            "UserOverview",
+            "UserDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8676,6 +10779,7 @@
           "Users"
         ],
         "summary": "Retrieves all working hours associated with a user",
+        "description": "**Required permissions**\nRead: `UserDetails`\nWrite: `UserOverview`, `UserDetails`",
         "parameters": [
           {
             "name": "id",
@@ -8707,6 +10811,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserDetails"
+          ],
+          "write": [
+            "UserOverview",
+            "UserDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8767,6 +10882,17 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserDetails"
+          ],
+          "write": [
+            "UserOverview",
+            "UserDetails"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8801,6 +10927,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -8859,6 +10995,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -8867,7 +11013,7 @@
         "tags": [
           "WorkingTimes"
         ],
-        "summary": "Updates an exising working time.",
+        "summary": "Updates an existing working time.",
         "description": "You can update a working time by providing the ID as parameter and the WorkingTimePut model in the body.",
         "parameters": [
           {
@@ -8914,6 +11060,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       },
       "delete": {
@@ -8921,6 +11077,7 @@
           "WorkingTimes"
         ],
         "summary": "Deletes the working time with a specific ID.",
+        "description": "**Required permissions**\nRead: `UserManagement`\nWrite: `UserManagement`\n*Own resource is always accessible without module permission.*",
         "parameters": [
           {
             "name": "id",
@@ -8937,6 +11094,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       },
       "get": {
@@ -8968,6 +11135,180 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/WorkingTimes/Deleted": {
+      "get": {
+        "tags": [
+          "WorkingTimes"
+        ],
+        "summary": "Retrieves all deleted working times.",
+        "description": "Lets an integration find out which synced working times it has to delete in the external system,\r\ne.g. with `$filter=deletedOn gt datetime'2026-10-01T00:00:00Z' and syncId ne null`.",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "<b>examples: </b><br>deletedOn gt datetime'2024-01-31T23:59:59Z'<br>syncId ne null",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "example: 0",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "example: 10",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "description": "<b>examples: </b><br>deletedOn,id<br>id desc",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkingTimeDeleted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/WorkingTimes/{id}/SetSyncId/{provider}/{syncId}": {
+      "put": {
+        "tags": [
+          "WorkingTimes"
+        ],
+        "summary": "Sets the id of the working time in the external system of an integration.",
+        "description": "Only the sync id is changed, UpdatedOn stays the same. The working time is linked to the integration.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the working time.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "path",
+            "description": "The integration the working time is synced to, e.g. `Personio`.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Provider"
+            }
+          },
+          {
+            "name": "syncId",
+            "in": "path",
+            "description": "The id of the working time in the external system.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
+        }
+      }
+    },
+    "/v2/WorkingTimes/BySyncId/{provider}/{syncId}": {
+      "delete": {
+        "tags": [
+          "WorkingTimes"
+        ],
+        "summary": "Deletes the working time with a specific sync id of an integration.",
+        "description": "Only working times linked to the integration of `provider` are deleted, so the same sync id of another integration is never touched.\r\nThe same rules as for `DELETE /WorkingTimes/{id}` apply.",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "description": "The integration the working time belongs to, e.g. `Personio`.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Provider"
+            }
+          },
+          {
+            "name": "syncId",
+            "in": "path",
+            "description": "The external sync id of the working time.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-permissions": {
+          "read": [ ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": false,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -9004,6 +11345,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -9038,6 +11389,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -9047,6 +11408,7 @@
           "WorkingTimes"
         ],
         "summary": "Gets the currently running working time (if there is one).",
+        "description": "**Required permissions**\nRead: `UserManagement`\nWrite: `UserManagement`\n*Own resource is always accessible without module permission.*",
         "responses": {
           "200": {
             "description": "OK",
@@ -9058,6 +11420,16 @@
               }
             }
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -9092,6 +11464,16 @@
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     },
@@ -9101,10 +11483,21 @@
           "WorkingTimes"
         ],
         "summary": "Stops the currently running working time (if there is one running).",
+        "description": "**Required permissions**\nRead: `UserManagement`\nWrite: `UserManagement`\n*Own resource is always accessible without module permission.*",
         "responses": {
           "200": {
             "description": "OK"
           }
+        },
+        "x-permissions": {
+          "read": [
+            "UserManagement"
+          ],
+          "write": [
+            "UserManagement"
+          ],
+          "allowOwnResource": true,
+          "delegatesToRelatedEntity": false
         }
       }
     }
@@ -9136,7 +11529,12 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "28391"
+            "example": "42454"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "Optional external sync identifier. If an absence with this id already exists, it is updated instead of created.",
+            "nullable": true
           },
           "start": {
             "type": "string",
@@ -9172,7 +11570,12 @@
             "type": "integer",
             "description": "The ID of the user whose absence this is",
             "format": "int32",
-            "example": "37836"
+            "example": "38353"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "Optional external sync identifier. If an absence with this id already exists, it is updated instead of created.",
+            "nullable": true
           },
           "id": {
             "type": "integer",
@@ -9230,6 +11633,148 @@
           },
           "user": {
             "$ref": "#/components/schemas/UserGet"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AbsencesReconcileEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "syncId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "example": null
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AbsencesReconcileFailure": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "syncId": {
+            "type": "string",
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AbsencesReconcilePost": {
+        "required": [
+          "from",
+          "provider",
+          "to"
+        ],
+        "type": "object",
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/Provider"
+          },
+          "from": {
+            "type": "string",
+            "description": "First start date of the window (inclusive), e.g. \"2026-09-08\".",
+            "format": "date-time",
+            "example": "2026-09-08"
+          },
+          "to": {
+            "type": "string",
+            "description": "Last start date of the window (inclusive), e.g. \"2027-10-08\".",
+            "format": "date-time",
+            "example": "2027-10-08"
+          },
+          "syncIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The complete list of external ids that currently exist in the source system for this window.",
+            "nullable": true
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "True, if the candidates should only be reported and not deleted."
+          },
+          "maxDeletions": {
+            "type": "integer",
+            "description": "Optional safety limit. If there are more candidates, nothing is deleted.",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AbsencesReconcileResult": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "window": {
+            "$ref": "#/components/schemas/AbsencesReconcileWindow"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "hqConsidered": {
+            "type": "integer",
+            "description": "Number of synced absences in helloHQ that start in the window.",
+            "format": "int32"
+          },
+          "personioProvided": {
+            "type": "integer",
+            "description": "Number of sync ids provided in the request.",
+            "format": "int32"
+          },
+          "deleted": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AbsencesReconcileEntry"
+            },
+            "description": "Deleted absences. On dry run or conflict, the absences that would be deleted.",
+            "nullable": true
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AbsencesReconcileFailure"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AbsencesReconcileWindow": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9378,7 +11923,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "71452"
+            "example": "66192"
           },
           "plainMessage": {
             "type": "string",
@@ -9439,7 +11984,7 @@
             "type": "integer",
             "description": "The ID of the author.",
             "format": "int32",
-            "example": "34971"
+            "example": "77773"
           }
         },
         "additionalProperties": false
@@ -10595,7 +13140,7 @@
             "type": "integer",
             "description": "The id of the company type.",
             "format": "int32",
-            "example": "64985"
+            "example": "19516"
           }
         },
         "additionalProperties": false,
@@ -14242,7 +16787,8 @@
       "EInvoiceType": {
         "enum": [
           "None",
-          "XRechnung"
+          "XRechnung",
+          "ZUGFeRD"
         ],
         "type": "string"
       },
@@ -14334,6 +16880,18 @@
           "estimatedPerformancePeriod": {
             "type": "string",
             "description": "Text representation of the EstimatedDueDate",
+            "nullable": true,
+            "example": "24-Oct"
+          },
+          "plannedDueDate": {
+            "type": "string",
+            "description": "Calculated due date of this billing period. In contrast to the EstimatedDueDate it is never\r\nreplaced by the date of the invoice that was generated for this estimation.",
+            "format": "date-time",
+            "example": "2024-04-30T00:00:00.000Z"
+          },
+          "plannedPerformancePeriod": {
+            "type": "string",
+            "description": "Text representation of the PlannedDueDate. In contrast to the EstimatedPerformancePeriod it is\r\nnever replaced by the performance period of the invoice that was generated for this estimation.",
             "nullable": true,
             "example": "24-Oct"
           }
@@ -15643,7 +18201,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -15815,7 +18373,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -15900,7 +18458,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -15985,7 +18543,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -16180,7 +18738,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -16271,7 +18829,7 @@
           },
           "dueMonth": {
             "type": "integer",
-            "description": "Month in which invoices are due. Applicable to intervals that are higher than monthly",
+            "description": "Month in which invoices are due. Annually: calendar month (1-12), required.\r\nQuarterAnnually: month of the quarter (1-3), HalfAnnually: month of the half-year (1-6).\r\nThe quarter and half-year start with the month of the start date. Without a value the invoices are due in\r\nthe first month of the period. Ignored for other intervals.",
             "format": "int32",
             "nullable": true,
             "example": "6"
@@ -16343,6 +18901,33 @@
         "type": "string",
         "description": "This enum represents the possible PlannedRevenueTypes (None, Standard and TimeAndMaterial)."
       },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
       "ProjectGet": {
         "required": [
           "companyId",
@@ -16372,7 +18957,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "24911"
+            "example": "33026"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16497,7 +19082,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "74294"
+            "example": "92545"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16888,7 +19473,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "20877"
+            "example": "57728"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -16901,13 +19486,13 @@
             "type": "integer",
             "description": "The ID of the template the project is based on.",
             "format": "int32",
-            "example": "23499"
+            "example": "27330"
           },
           "projectStatusId": {
             "type": "integer",
             "description": "The ID of the status of the project.",
             "format": "int32",
-            "example": "24705"
+            "example": "68768"
           },
           "projectMembers": {
             "type": "array",
@@ -16966,7 +19551,7 @@
             "type": "integer",
             "description": "The ID of the company the project is for.",
             "format": "int32",
-            "example": "26389"
+            "example": "30650"
           },
           "internalContactPersonId": {
             "type": "integer",
@@ -18827,6 +21412,30 @@
             "format": "int32",
             "nullable": true,
             "example": "8"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The ID of the task in an external system (e.g. Jira). It must be unique across all tasks.\r\nIf omitted or null on update, the existing value remains unchanged, so an existing sync ID cannot be removed via the API.",
+            "nullable": true,
+            "example": "10042"
+          },
+          "shouldBeSynced": {
+            "type": "boolean",
+            "description": "Whether the task should be synced with the external system.\r\nIf omitted or null on update, the existing value remains unchanged.",
+            "nullable": true,
+            "example": "True"
+          },
+          "jiraProjectName": {
+            "type": "string",
+            "description": "The related jira issue key.\r\nIf omitted or null on update, the existing value remains unchanged.",
+            "nullable": true,
+            "example": "JIRA-123"
+          },
+          "aworkSyncId": {
+            "type": "string",
+            "description": "The ID of the related awork task. Setting it links the task to that awork task.\r\nIf omitted or null on update, the existing value remains unchanged, so an existing awork sync ID cannot be removed via the API.",
+            "nullable": true,
+            "example": "4e155bfe-7c0f-46aa-955b-fe7c0fc6aa18"
           }
         },
         "additionalProperties": false,
@@ -18900,6 +21509,30 @@
             "format": "int32",
             "nullable": true,
             "example": "8"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The ID of the task in an external system (e.g. Jira). It must be unique across all tasks.\r\nIf omitted or null on update, the existing value remains unchanged, so an existing sync ID cannot be removed via the API.",
+            "nullable": true,
+            "example": "10042"
+          },
+          "shouldBeSynced": {
+            "type": "boolean",
+            "description": "Whether the task should be synced with the external system.\r\nIf omitted or null on update, the existing value remains unchanged.",
+            "nullable": true,
+            "example": "True"
+          },
+          "jiraProjectName": {
+            "type": "string",
+            "description": "The related jira issue key.\r\nIf omitted or null on update, the existing value remains unchanged.",
+            "nullable": true,
+            "example": "JIRA-123"
+          },
+          "aworkSyncId": {
+            "type": "string",
+            "description": "The ID of the related awork task. Setting it links the task to that awork task.\r\nIf omitted or null on update, the existing value remains unchanged, so an existing awork sync ID cannot be removed via the API.",
+            "nullable": true,
+            "example": "4e155bfe-7c0f-46aa-955b-fe7c0fc6aa18"
           }
         },
         "additionalProperties": false,
@@ -19469,6 +22102,13 @@
             "description": "The department of the user.",
             "nullable": true,
             "example": "HR"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone of the user as IANA id. Europe/Berlin if the user has none.",
+            "nullable": true,
+            "readOnly": true,
+            "example": "Europe/Berlin"
           }
         },
         "additionalProperties": false,
@@ -19547,6 +22187,13 @@
             "description": "The department of the user.",
             "nullable": true,
             "example": "HR"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone of the user as IANA id. Europe/Berlin if the user has none.",
+            "nullable": true,
+            "readOnly": true,
+            "example": "Europe/Berlin"
           },
           "defaultAddress": {
             "$ref": "#/components/schemas/CompanyAddressGet"
@@ -19933,6 +22580,39 @@
         "additionalProperties": false,
         "description": "PUT-Model for UserReporting."
       },
+      "WorkingTimeDeleted": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of the working time.",
+            "format": "int32",
+            "example": "4711"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "The id of the related user.",
+            "format": "int32",
+            "nullable": true,
+            "example": "18263"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The id of the working time in the external system it was synced to.",
+            "nullable": true,
+            "example": "4c1a6f0e-5b7d-4f0e-9a3b-2d8e1f7c6a90"
+          },
+          "deletedOn": {
+            "type": "string",
+            "description": "When the working time was deleted in utc.",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-12T08:00:00Z"
+          }
+        },
+        "additionalProperties": false,
+        "description": "GET-Model for a deleted WorkingTime."
+      },
       "WorkingTimeGetRelated": {
         "type": "object",
         "properties": {
@@ -19977,10 +22657,10 @@
           },
           "breakDuration": {
             "type": "number",
-            "description": "The break duration in hours.",
+            "description": "The break duration in minutes. Only set for breaks.",
             "format": "double",
             "nullable": true,
-            "example": "0.5"
+            "example": "30"
           },
           "note": {
             "type": "string",
@@ -20014,6 +22694,12 @@
             "description": "Whether the working time is a break or not.",
             "readOnly": true,
             "example": "True"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The id of the working time in the external system it is synced to (e.g. the Personio attendance period id).\r\nSet via PUT /v2/WorkingTimes/{id}/SetSyncId/{provider}/{syncId}.",
+            "nullable": true,
+            "example": "4c1a6f0e-5b7d-4f0e-9a3b-2d8e1f7c6a90"
           },
           "project": {
             "$ref": "#/components/schemas/ProjectGet"
@@ -20072,10 +22758,10 @@
           },
           "breakDuration": {
             "type": "number",
-            "description": "The break duration in hours.",
+            "description": "The break duration in minutes. Only set for breaks.",
             "format": "double",
             "nullable": true,
-            "example": "0.5"
+            "example": "30"
           },
           "note": {
             "type": "string",
@@ -20109,6 +22795,12 @@
             "description": "Whether the working time is a break or not.",
             "readOnly": true,
             "example": "True"
+          },
+          "syncId": {
+            "type": "string",
+            "description": "The id of the working time in the external system it is synced to (e.g. the Personio attendance period id).\r\nSet via PUT /v2/WorkingTimes/{id}/SetSyncId/{provider}/{syncId}.",
+            "nullable": true,
+            "example": "4c1a6f0e-5b7d-4f0e-9a3b-2d8e1f7c6a90"
           },
           "user": {
             "$ref": "#/components/schemas/UserBase"
